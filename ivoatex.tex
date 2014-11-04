@@ -1,0 +1,677 @@
+\documentclass[11pt,a4paper]{ivoa}
+\input tthdefs
+
+\usepackage{listings}
+\lstloadlanguages{sh,make,[latex]tex}
+\lstset{flexiblecolumns=true,numberstyle=\small,numbers=left,
+  identifierstyle=\texttt,defaultdialect=[latex]tex, language=tex}
+
+\usepackage[utf8]{inputenc}
+
+\definecolor{texcolor}{rgb}{0.4,0.1,0.1}
+\newcommand{\texword}[1]{\texttt{\color{texcolor} #1}}
+
+\title{The ivoatex Document Preparation System}
+
+\ivoagroup{Standards and Processes}
+
+\author[http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/MarkusDemleitner]{Markus Demleitner}
+
+\editor{Markus Demleitner}
+
+\previousversion{This is the first public release}
+       
+
+\begin{document}
+\begin{abstract}
+This note describes the \ivoatex\ document preparation system for IVOA
+standards and notes.  \ivoatex\ supports the production of
+PDF and HTML renderings of the documents with sources in
+plain text suitable for version control, as is desirable for normative
+texts.  This note contains a user guide as well as a discussion of 
+\ivoatex's dependencies and its implementation.
+\end{abstract}
+
+
+\section*{Acknowledgments}
+
+\ivoatex\ heavily draws from experiences made with previous markup-based
+document preparation systems, in particular LaTeX classes and
+infrastructure created by Sebasti\'en Derriere and Mark Taylor, as well
+as Paul Harrison's XML-based ivoadoc system.
+
+We thank tth's author, Ian Hutchinson, for generous technical support
+and prompt provision of solutions in the upstream source where necessary.
+
+\section{Introduction}
+
+Creating and developing standards is a  big part of the operations of
+the International Virtual Observatory Association (IVOA).
+As these are normative texts, attention to detail is very important, and
+being able to rigorously track changes to the documents is highly
+advantageous.  
+
+Standards are also often developed cooperatively, which means that
+capabilities for branching and merging are desirable.  This strongly
+suggests employing version control systems for document authoring.
+Change tracking in software designed for editing office documents, to
+the extent it is supported at all, usually requires significant
+manual intervention, is optional, often used incorrectly, and frequently
+lacks interoperability.  Led by these considerations, it was decided that
+\ivoatex\ would have to be based on plain text source files.
+
+As mandated by \citet{std:docSTD}, finished documents have to be at
+least available in PDF, while an additional HTML rendering for online
+use is recommended.  A document preparation system should thus be
+able  to produce documents in these formats in at least acceptable
+quality.
+
+With these constraints, several strong contenders offered themselves.  Paul
+Harrison's ivoadoc system\footnote{TODO: Volute URL} went for XHTML as
+an input format and used XSLT2 and XML-FO as document processors.  While
+this facilitated several interesting features  -- for instance,
+automatic extraction and formatting of XML schema framents or
+straightvorward embedding of RDFa markup for machine-readable examples
+--, it turned out that tooling issues were severe (e.g., reliable use
+of SGML catalogs\footnote{This is important as retrieval of DTDs and
+similar data from their commonly used system identifiers (i.e.,
+typically W3C web servers) is at least undesirable and in practice
+causes massive delays in formatting due to rate limiting on the part of
+the W3C.}, non-free hyphenation patterns, classpath issues) and the use
+of XML-FO for PDF generation yielded inferior renderings with little
+prospect for improvements by third parties. Also, authors disliked
+writing HTML tags.
+
+Other options considered for source languages included docbook or one of
+the newer lightweight markup languages (ReStructuredText, markdown,
+etc).  In each case, there were concers either regarding the system's power
+and flexibility or its ease of installation and maintenance.
+
+Meanwhile, several documents -- to mention just a few, SAMP, VOTable,
+and VOUnits -- had successfully used \TeX-based systems typically
+derived from work done in the early 2000s by Sebasti\'en Derriere.
+\ivoatex essentially is a generalisation of these standard's formatting
+systems, also inheriting from them the use of the \texttt{make} tool to
+automate workflows.
+
+\ivoatex\ was extended to relieve document editors from some of the
+bookkeeping involved with producing IVOA standards and provide authors
+with uniform solutions for common problems in standards typesetting.
+
+In the remainder of this document, we give quick-start instructions
+on installation and authoring in sect.~\ref{sect:quick} and continue
+a more thorough discussion of \ivoatex's facilities with a special focus
+on enabling proper automatic production of both HTML and PDF output in
+sect.~\ref{sect:authoring}.  In sect.~\ref{sect:impl}, additional
+details on the implemenation are given for the benefit of authors
+planning to extend \ivoatex.  We close with a discussion of open issues
+and desirable developments.
+
+\section{Installation and Quick Start}
+\label{sect:quick}
+
+\subsection{Dependencies}
+
+\ivoatex\ is designed to work more or less out of the box on common
+POSIX-compliant systems; no non-free software is required for operation.
+Its main uncommon dependency, the tth translator, is delivered with the
+distribution and built on-demand.  As \ivoatex's tth may at times offer
+some enhancements over the upstream tth, using a system-installed tth is
+discouraged.
+
+The remaining dependencies include:
+
+\begin{itemize}
+\item A \LaTeX\ distribution with some commonly available packages (calc,
+graphicx, xcolor, ifthen, doc, paralist, url, natbib, caption, hyperref,
+the agsm bibliography style).  It is recommended to install TeXLive.
+\item A sufficiently capable implementation of \texttt{make}, with GNU's
+implementation recommended.
+\item The XSLT1 processor \texttt{xsltproc} (a different processor can
+be used, but that would probably require custom make rules).
+\item The \texttt{gcc} compiler (another C compiler could be used; the
+central makefile should probably be amended to allow easier changes
+here).
+\item The \texttt{zip} archiver for package generation.
+\item \texttt{imageMagick} and \texttt{ghostscript} if vector graphics
+is to be processed.
+\end{itemize}
+
+On Windows, it is recommended to run \ivoatex\ within cygwin, where all
+dependencies can easily be installed from cygwin's repository.  On
+Debian-derived systems (and, with minor adaptions, most other
+unixlike distributions), the dependencies should be present after
+running a distribution-specific adaption of
+
+\begin{lstlisting}[language=sh]
+apt-get install build-essential texlive-full zip xsltproc\
+  imagemagick ghostscript
+\end{lstlisting}
+
+TODO: OS X?
+
+\subsection{Quick Start}
+
+For ease of installation and robustness, \ivoatex\ for now is designed
+to be used from within a subdirectory of the directory containing the
+document sources (rather than being installed globally).  Given that
+it is fairly compact, having one copy per document seems acceptable.
+
+So, the first step to use ivoatex is to create a development
+directory:
+
+\begin{lstlisting}[language=sh]
+export DOCNAME=SampleDoc
+# this would be your document's short name, e.g., RegTAP, SIAv2)
+mkdir $DOCNAME
+\end{lstlisting}
+
+The DOCNAME -- which will turn up in URLs, standard identifiers, and the
+like -- should be chosen to be both succinct and expressive.  A name
+like \texttt{SimpleDALRegExt} probably marks the upper limit in terms of
+length.
+
+While it is recommended to use IVOA's designated common version control
+system -- at this point, this is
+Volute\footnote{http://volute.googlecode.com} -- from the outset of
+document development, it is possible to operate it locally as well.  We
+will discuss the local workflow first, then go on to the
+(recommended) case of work with a common version control system.
+
+\subsubsection{Installation from Archive}
+
+Without version control, it is sufficient to obtain \ivoatex\ from a
+distribution site and unpack it into the future document directory:
+
+\begin{lstlisting}[language=sh]
+cd $DOCNAME
+curl http://soft.g-vo.org/ivoatex/ivoatex-latest.tar.gz \
+  | tar -xvzf -k
+\end{lstlisting}
+
+\subsubsection{Installation with SVN version control}
+
+While it is of course possible to keep \ivoatex\ in checkouts, too,
+the recommended and more elegant way is to use \texttt{svn:externals}.
+
+\begin{lstlisting}[language=sh]
+export VOLUTEBASE="https://volute.googlecode.com/svn/trunk/projects"
+export WG=?????
+# this would be the Working Group as represented in
+# volute subdirectories: dal, dm, edu, grid, registry
+svn import $DOCNAME $VOLUTEBASE/$WG/$DOCNAME
+rmdir $DOCNAME
+svn co $VOLUTEBASE/$WG/$DOCNAME $DOCNAME
+cd $DOCNAME
+svn propset svn:externals\
+  "ivoatex $VOLUTEBASE/ivoapub/ivoatex" .
+svn update
+svn propset svn:ignore . --file ivoatex/svn-ignore.txt
+\end{lstlisting}
+
+This has the advantage that you get updates automatically and that it is 
+trivial to feed back bibliography additions and patches to \ivoatex\
+itself.
+
+\subsubsection{Beginning the document}
+\label{sect:beginning}
+
+For convenience, the document production should start from some common
+templates which are part of the \ivoatex\ distribution:
+
+\begin{lstlisting}[language=sh]
+cp ivoatex/Makefile.template Makefile
+cp ivoatex/document.template $DOCNAME.tex
+cp ivoatex/archdiag.png .
+\end{lstlisting}
+
+The next step is to fill out the makefile template.  This template
+inversion 0.4 looks like this:
+
+\begin{lstlisting}[language=make]
+# ivoatex Makefile.  The ivoatex/README for the targets available.
+
+# short name of your document (e.g., RegTAP)
+DOCNAME = ????
+
+# count up; you probably do not want to bother with versions <1.0
+DOCVERSION = 1.0
+
+# Publication date, ISO format; update manually for "releases"
+DOCDATE = ???
+
+# What is it you're writing: NOTE, WD, PR, or REC
+DOCTYPE = ???
+
+# Source files for the TeX document (but the main file must always
+# be called $(DOCNAME).tex
+SOURCES = $(DOCNAME).tex
+
+# List of pixel image files to be included in submitted package 
+FIGURES = archdiag.png
+
+# List of PDF figures (for vector graphics)
+VECTORFIGURES = 
+
+include ivoatex/Makefile
+\end{lstlisting}
+
+All lines with question marks need to be filled out.  The document date
+is the publication date, which can be significantly different from the
+current date.  After its initial setting, it should only be changed at
+the time of submission to the document archive.  It is always in
+DALI-style ISO format \citep{std:DALI}, e.g., 2014-03-31.
+
+\texttt{SOURCES} is used in dependency processing.  It would be amended
+when the source file is split into separate files or if material is
+included into the document, e.g., via \texword{lstinputlisting}.
+Graphics files included do not need to be given here.
+
+\texttt{FIGURES} must contain the names of all bitmap graphics included
+in the document; files missing here will be missing from the package for
+distribution to the IVOA document repository, which will break the HTML
+rendering.  As to \texttt{VECTORFIGURES}, see
+sect.~\ref{sect:vectorgraphics}.
+
+The template for the \TeX\ source contains several lines with
+multiple question marks.  These must be filled out as well.
+
+As illustrated in the template, both \texword{author} and
+\texword{previousversion} support an optional argument giving an URL; for
+\texword{author}, it should normally point to the respective person's
+page in the IVOA wiki, for \texword{previousversion}, it should point to
+the landing page of the respective document version in the IVOA document
+repository.  Further automation for maintaining document history is
+envisioned.
+
+The architecture diagram specimen \texttt{archdiag.png} is only
+necessary for documents on the recommendation track (i.e., notes in
+general do not have one).  Architecture diagrams adapted to the concrete
+document are currently prepared by the chair of the Technical
+Coordination Group on request.  If no architecture diagram is present
+within a document, the reference to it from \texttt{FIGURES} in the
+makefile must be removed.
+
+The document template assumes the source is written in UTF-8 encoding.
+Authors are urged to keep lines shorter than 72 characters in input
+files whenever possible in order to keep diffs useful and readable.
+When edits are made, paragraphs should not normally be reflowed to avoid
+large diffs for minor edits.
+
+The PDF version of the document is built by the makefile's default rule,
+so running \texttt{make} will usually by enough.  This will produce a
+file \texttt{\$DOCNAME.pdf}.  If the makefile in the document directory
+defines own rules, overriding the default target, this file name will
+have to be given explicitely as the target name.
+
+Other makefile targets for author use include:
+
+\begin{itemize}
+\item \texttt{biblio} updates the bibliography (i.e., runs \BibTeX);
+running this is necessary after one of the bibliography files is updated
+or when a new publication is referenced from the document.
+\item \texttt{forecetex} rebuilds the PDF unconditionally (e.g., when TeX
+asks to be rerun)
+\item \texttt{\$DOCNAME.html} generates an HTML rendering of the document
+\item \texttt{package} generates a zip file containing everything needed
+for publication in the IVOA's document repository.   Obviously, 
+\texttt{DOCVERSION}, \texttt{DOCTYPE}, and \texttt{DOCDATE} in the
+Makefile should be updated as necessary before this target is built.
+The result is a zip file with a name compliant to the IVOA document
+standards \citep{std:docSTD}.
+\end{itemize}
+
+\begin{admonition}{Note}
+Simply running \texttt{latex} or \texttt{pdflatex} directly
+(rather than through make) is \emph{not} supported with \ivoatex.  Due
+to the non-global installation of the support files, the \TeX\ run needs
+a special environment that is prepared by the makefile.
+\end{admonition}
+
+\subsection{Examples}
+
+Examples for \ivoatex\ use include this document\footnote{TODO: volute
+URL} or RegTAP\footnote{TODO: volute URL}.
+
+\section{Authoring documents}
+\label{sect:authoring}
+
+While \ivoatex\ documents can be written much like any other \TeX\
+document, it is advisable to follow certain standards and use special
+facilities for common appearance, easier development, and possible
+evolution of \ivoatex\ itself.
+
+\subsection{\ivoatex\ Features}
+
+\ivoatex\ provides a small set of macros and environments designed
+to ease standards authoring.  These include:
+
+\begin{bigdescription}
+\item[\texword{author}, \texword{previousversion}] these are discussed
+in sect.~\ref{sect:beginning}.
+\item[\texword{xmlel}] a macro for marking up XML element names and
+similar.  The intention is that these are typeset uniformly across
+documents.  Further semantic markup of this kind is planned for future
+releases, and document authors are encouraged to contribute terms.
+\item[\texword{admonition}] This is an environment for 
+displayed boxes, intended for notes, tips, and the like.  
+It takes an argument giving the head of the box, e.g.,
+
+\begin{lstlisting}[language=TeX]
+\begin{admonition}{Note}
+Admonitions should not be overdone.  
+Also, they are floating insertions.
+\end{admonition}
+\end{lstlisting}
+\item[\texword{bigdescription}] This is an environment for definition
+lists in the style of HTML \xmlel{dl}, and it will be translated into
+one.  Use \verb|\item[term]| for the term to be defined.
+\end{bigdescription}
+
+
+Also note that the title page is generated by the abstract environment.
+Thus, all \ivoatex\ documents must have an abstract within the
+\texword{abstract} environment.
+
+\subsection{Listings, Verbatim Material}
+
+\ivoatex\ documents should use the \texword{listings} package to include
+source code snippets, XML fragments and the like.  It can be used after
+a set of declarations like
+
+\begin{lstlisting}[language=TeX]
+\usepackage{listings}
+\lstloadlanguages{XML,sh}
+\lstset{flexiblecolumns=true,numberstyle=\small,numbers=left}
+\end{lstlisting}
+
+is included in the document preamble (i.e., before its
+\verb|\begin{document}|). The languages preloaded should be adapted to
+the document's needs. Numbering, of course, is optional.  Additional
+languages supported that are likely relevant in a VO context include C,
+fortran, python, SQL, and java, specified as above case-insensitively.
+
+Actual listings are obtained with code like
+
+\begin{verbatim}
+\begin{lstlisting}[language=XML]
+<example id="empty"/>
+\end{lstlisting}
+\end{verbatim}
+
+Alternatively, entire files can be included like this:
+
+\begin{verbatim}
+\lstinputlisting[language=XML]{makeutypes.xslt}
+\end{verbatim}
+
+In the PDF rendering, the listings are pretty-printed.  In the HTML
+rendering, the content is simply included in \xmlel{pre} elements right
+now.
+
+\subsection{References and Bibliography}
+
+\ivoatex\ documents should use natbib and \BibTeX\ to manage references.
+The package comes with a default bibliography in
+\texttt{ivoatex/ivoabib.bib} containing records for many publications
+likely to be cited by IVOA documents as well as (soon) all IVOA
+documents already published either as recommendation or note. 
+
+As usual in natbib, actual references are made through either
+\verb|\citep{tag}|, yielding a form like ``(Einstein 1905)'',
+or \verb|\citet{tag}|, yielding a form like ``Einstein (1905)''.
+\ivoatex\ does not support variant forms of citep and citet (i.e., those
+with optional arguments) yet; they will work in PDF output but fail in
+HTML.  Contributions to improve this are welcome.
+
+
+If a source does not already have a record in the bibliography that
+comes with \ivoatex, authors are welcome to contribute new records into
+its main repository.  Authors expecting that a reference really will not
+be reused in other documents can have a local bibliography as well.
+They will then need to amend the bibliography definition near the end of
+the source file to, for instance,
+
+\begin{lstlisting}[language=tex]
+\bibliography{ivoatex/ivoabib,local}
+\end{lstlisting}
+
+(assuming the local records are stored in \texttt{local.bib}).
+
+Changes that introduce new references or additions to the bibliography
+require that \texttt{make biblio} is run afterwards.
+
+\subsection{Graphics}
+
+\ivoatex\ supports all bitmap graphics formats that pdflatex supports.
+In practice, authors are encouraged to restrict themselves to JPEG, PNG,
+and possibly GIF.  Currently, identical images are used for both PDF and
+HTML renderings.  The recommended pattern for figures is
+
+\begin{lstlisting}[language=tex]
+\begin{figure}[thm]
+\begin{center}
+\includegraphics[width=0.9\textwidth]{mydiagram.png}
+\end{center}
+\caption{A diagram of what this is about.}
+\label{fig:mydiag}
+\end{figure}
+\end{lstlisting}
+
+-- this gives \LaTeX\ some leeway in placing the figure, defines the image
+size in units of the page width, and centers the image itself.
+
+All bitmap graphics in a document must  be listed in the makefile's
+\texttt{FIGURES} variable.  If they are not, the HTML rendering will be
+broken.
+
+\subsubsection{Vector Graphics}
+\label{sect:vectorgraphics}
+
+The only vector graphics format supported in \ivoatex\ is PDF.  PDF
+files can be directly used in \texword{includegraphics}.  The names of
+such figures must be listed in the makefile's \texttt{VECTORFIGURES}
+variable.
+
+From \texttt{VECTORFIGURES}, \ivoatex\ arranges that, when a PDF figure 
+\texttt{foo.pdf} is used, the HTML target depends on called
+\texttt{foo.pdf.png}.  This PNG can be generated automatically by
+\ivoatex\ using a combination of ghostscript and imagemagic.  It may
+sometimes be preferable to perform a custom conversion by hand (e.g.,
+more compact representation with bilevel source images), in which case
+the pre-rendered PNG should be included with version control.  This also
+has the advantage that neither ghostscript nor imagemagic are build
+dependencies of the document.
+
+\subsection{Tables}
+
+In tables, rules should be used sparingly.  The standard pattern for tables is
+something like
+
+\begin{lstlisting}
+\begin{table}[thm]
+\begin{tabular}{p{0.35\textwidth}p{0.64\textwidth}}
+\sptablerule
+\textbf{Column Head}&\textbf{Another column head}\\
+\sptablerule
+A value & Another value\\
+A value in row 2& And so on\\
+\sptablerule
+\caption{A sample table}
+\label{table:extable}
+\end{tabular}
+\end{table}
+\end{lstlisting}
+
+The \texword{sptablerule} used here inserts a horizontal rule with some
+extra spacing and will be rendered consistently in both PDF and HTML.
+It should not, as a rule, used between table rows, it is intended
+primarily to delimit the table itself as well as the the heading and the
+body.
+
+
+\section{Customisation and Development}
+\label{sect:impl}
+
+This section discusses aspects of \ivoatex\ that are more technical in
+nature.  Authors with a modicum of \TeX\ expertise are nevertheless
+encouraged to read it.
+
+\subsection{Technical Overview}
+
+The central files in \ivoatex\ processing are
+
+\begin{bigdescription}
+\item[ivoa.cls] The class file, inheriting from \LaTeX's article class.
+In it, several sections are delimited by comments like
+
+\begin{lstlisting}
+%%%%%%%%%%%%%%%%%%% Metadata definition macros
+\end{lstlisting}
+
+The file defines the markup rules for PDF processing, including
+titlepage generation and extra macros and environments.  Its content is
+ignored for HTML generation.
+
+\item[tthdefs.tex] This file protects its contents from normal \TeX\
+processing by a \verb|\iftth| conditional. This way, only tth sees
+definitions made here. Each special feature defined in \texttt{ivoa.cls}
+has a counterpart here, giving rules for translation to HTML.  This
+usually encompasses emitting some HTML before and after the argument of
+a TeX construct, where material between \verb|\begin{html}| and
+\verb|\end{html}| is included literally in the HTML document.
+
+\item[tth-ivoa.xslt] An XSLT stylesheet that postprocesses tth's output
+and performs some operations that would be inconvenient to implement in
+\texttt{tthdefs.tex}, in particular for the formatting of the opening
+material.
+
+\item[Makefile] This makefile is included by the user makefile in the
+document directory proper.  It defines the rules given above as well as
+some extra housekeeping rules like package building and building tth
+from its source.
+
+\end{bigdescription}
+
+\subsection{Semantic Markup}
+
+In order to make it support rich, semantic markup, \ivoatex\ needs to be
+continuosly developed.  In particular, it is good practice to define
+macros for marking up values of certain datatypes, with \ivoatex's
+\texword{xmlel} a first example.  Thus, whenever a document has multiple
+instances of such values, authors should define macros and use these.
+For instance, RegTAP deals with concepts from VOResource and its own
+database schema and hence has
+
+\begin{lstlisting}[language=TeX]
+\definecolor{rtcolor}{rgb}{0.15,0.4,0.3}
+\newcommand{\rtent}[1]{\texttt{\color{rtcolor} #1}}
+\newcommand{\vorent}[1]{\textsc{#1}}
+\end{lstlisting}
+
+in its document preamble to
+define markup for ``RegTAP entity'' and ``VOResource entity'', whereas
+this note, as it mentions many words with a special meaning to \TeX, has
+
+\begin{lstlisting}[language=TeX]
+\definecolor{texcolor}{rgb}{0.4,0.1,0.1}
+\newcommand{\texword}[1]{\texttt{\color{texcolor} #1}}
+\end{lstlisting}
+
+Such macros would be included in \ivoatex\ itself rather than an
+individual document's preamble as they prove useful in multiple
+documents.
+
+\subsection{Custom Macros and Environments}
+
+The tth translator used by \ivoatex\ ignores \texword{usepackage}.  Many
+common packages are natively supported, but those that are not in
+general need specific handling.  For instance, the \texword{lstlisting}
+environment is not supported by tth, and hence in
+\texttt{tthdefs.tex} there is
+
+\begin{lstlisting}[language=TeX]
+\newenvironment{lstlisting}[1][None]{%
+    \begin{html}<pre class="listing">\end{html}
+  }{%
+    \begin{html}</pre>\end{html}
+  }
+
+\newcommand{\lstinputlisting}[2][None]{
+  \verbatiminput{#2}
+}
+\end{lstlisting}
+
+to have some sensible behaviour for the \ivoatex-supported constructs of
+the package.
+
+When a document requires special markup, it is likely that similarly
+different implementations will be necessary for PDF and HTML output.
+Using \texword{iftth} the implementations for the current output mode
+can be selected (without the \texword{newif} mentioned in the tth
+documentation, as that is already performed in \texttt{tthdefs.tex}.
+
+For instance, RegTAP has many inline tables that need special spacing
+the PDF rendering, whereas normal tables will do in HTML.  It therefore
+has the definitions
+
+\begin{lstlisting}
+\iftth
+  \newenvironment{inlinetable}{}{}
+\else
+  \newenvironment{inlinetable}{\vskip 1ex\vfil
+    \penalty8000\vfilneg%
+    \hbox to\hsize\bgroup\hss}
+  {\hss\egroup\vspace{8pt}}
+\fi
+\end{lstlisting}
+
+
+\subsection{Migration from Ivoadoc}
+
+To ease migration from documents authored in ivoadoc, \ivoatex\ comes
+with an XSLT stylesheet writing out a starting point for an ivoatex
+version.  While many desirable features (e.g., extraction of titlepage
+information) are not implemented and translated tables are incomplete,
+the styleheet should still save time.  For XHTML-compliant ivoadoc
+sources, the stylesheet is used like this:
+
+\begin{lstlisting}[language=sh]
+xsltproc ivoatex/fromivoadoc.xslt ivoadoc_source.html
+\end{lstlisting}
+
+
+\section{Desirable Features to be Implemented}
+
+Frequently, certain parts of technical documents should be
+machine-ge\-ne\-ra\-ted.  Examples of such parts include the automatic
+extraction of XML schema snippets and their inclusion in the document
+as provided by ivoadoc, or the TAP\_SCHEMA-derived tables of column
+metadata in RegTAP.  As RegTAP shows, machine-generated content can
+already be used within \ivoatex, but it would certainly be preferable if
+some default framework for doing this were provided.
+
+The inclusion of IVOA architecture diagrams as bitmaps prepared by the
+TCG chair is unsatisfactory on both technical and organisational
+grounds.  A common system allowing their easy geenration based on SVG or
+one of the \TeX-based graphics engines should be written.
+
+A major drawback of the HTML output is that paragraphs are not actually
+marked up as such.  Due to the \TeX\ processing model, their
+reconstruction is non-trivial.  Hence in the generated HTML,
+source-level paragraphs are rendered as text nodes separated by empty
+HTML paragraph elements.  It would probably be possible to rectify this
+in the XSLT postprocessing.
+
+\appendix
+\section{Changes from Previous Versions}
+
+No previous versions yet.  
+% these would be subsections "Changes from v. WD-..."
+% Use itemize environments.
+
+
+\bibliography{ivoatex/ivoabib}
+
+
+\end{document}
