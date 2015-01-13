@@ -141,8 +141,7 @@ is to be processed.
 
 On Windows, it is recommended to run \ivoatex\ within cygwin, where all
 dependencies can easily be installed from cygwin's repository.  On
-Debian-derived systems (and, with minor adaptions, most other
-unixlike distributions), the dependencies should be present after
+Debian-derived systems, the dependencies should be present after
 running a distribution-specific adaption of
 
 \begin{lstlisting}[language=sh]
@@ -151,7 +150,14 @@ apt-get install build-essential texlive-full zip xsltproc\
 \end{lstlisting}
 
 (cm-super contains vector versions of computer modern fonts in T1
-encoding).
+encoding), on RPM-based systems something like
+
+\begin{lstlisting}[language=sh]
+yum install texlive-scheme-full libxslt make gcc zip\
+  ImageMagick ghostscript
+\end{lstlisting}
+
+should pull in everything that is necessary.
 
 TODO: OS X?
 
@@ -520,6 +526,29 @@ It should not, as a rule, used between table rows, it is intended
 primarily to delimit the table itself as well as the the heading and the
 body.
 
+\subsection{Hyperlinks}
+
+While \ivoatex\ puts no restrictions on the usage of hyperref features,
+the preferred way to include links in \ivoatex\ documents is to use the
+\texword{url} macro, i.e., use the URL itself as the anchor text.  In
+this way, the link remains (to some extent) usable even if the document
+is printed.  The alternative two-argument \texword{href} should
+generally be avoided for that reason.  For instance,
+
+\begin{lstlisting}
+(this is bad:) The \href{http://ivoa.net}{IVOA} has issued
+\href{http://ivoa.net/documents}{many standards}.
+\end{lstlisting}
+
+would severely degrade when printed and is hence discouraged, whereas
+
+\begin{lstlisting}
+The IVOA\footnote{\url{http://ivoa.net}} has issued many 
+standards, all of which can be retrieved from 
+\url{http://ivoa.net/documents}.
+\end{lstlisting}
+
+properly works on all of \ivoatex's target media.
 
 \section{Customisation and Development}
 \label{sect:impl}
