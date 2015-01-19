@@ -66,13 +66,14 @@ use is recommended.  A document preparation system should thus be
 able  to produce documents in these formats in at least acceptable
 quality.
 
-With these constraints, several strong contenders offered themselves.  Paul
+With these constraints in mind, several possible solutions were
+investigated.  Paul
 Harrison's ivoadoc
 system\footnote{\url{https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoadoc}} 
 went for XHTML as
 an input format and used XSLT2 and XML-FO as document processors.  While
 this facilitated several interesting features  -- for instance,
-automatic extraction and formatting of XML schema framents or
+automatic extraction and formatting of XML schema fragments or
 straightvorward embedding of RDFa markup for machine-readable examples
 --, it turned out that tooling issues were severe (e.g., reliable use
 of SGML catalogs\footnote{This is important as retrieval of DTDs and
@@ -92,7 +93,7 @@ and flexibility or its ease of installation and maintenance.
 Meanwhile, several documents -- to mention just a few, SAMP, VOTable,
 and VOUnits -- had successfully used \TeX-based systems typically
 derived from work done in the early 2000s by Sebasti\'en Derriere.
-\ivoatex essentially is a generalisation of these standard's formatting
+\ivoatex\ essentially is a generalisation of these standard's formatting
 systems, also inheriting from them the use of the \texttt{make} tool to
 automate workflows.
 
@@ -161,6 +162,21 @@ should pull in everything that is necessary.
 
 TODO: OS X?
 
+To see if the prerequisites are there and compatible with \ivoatex, try
+building this document from its volute source:
+
+\begin{lstlisting}[language=sh]
+svn co https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc
+cd ivoatexDoc
+make biblio   # update the bibliography
+make forcetex # make a PDF ignoring timestamps
+make ivoatexDoc.html  # make an html
+make package # make a zipfile for IVOA submission
+\end{lstlisting}
+
+Messages about unexpected end tags in HTML generation are
+(unfortunately) expected at this point and no reason for alarm.
+
 \subsection{Quick Start}
 
 For ease of installation and robustness, \ivoatex\ for now is designed
@@ -178,18 +194,19 @@ mkdir $DOCNAME
 \end{lstlisting}
 
 The DOCNAME -- which will turn up in URLs, standard identifiers, and the
-like -- should be chosen to be both succinct and expressive.  A name
+like -- should be chosen to be both succinct and expressive, and it
+should not contain non-alphanumeric characters (the examples given here
+assume that, too).  A name
 like \texttt{SimpleDALRegExt} probably marks the upper limit in terms of
 length.
 
-While it is recommended to use IVOA's designated common version control
+While it is clearly preferable if authors use IVOA's 
+designated common version control
 system -- at this point, this is
 Volute\footnote{http://volute.googlecode.com} -- from the outset of
-document development, it is possible to operate it locally as well.  We
-will discuss the local workflow first, then go on to the
-(recommended) case of work with a common version control system.
+document development, it is possible to operate it locally as well.
 
-\subsubsection{Installation from Archive}
+\subsubsection{Installation from Archive (without Volute)}
 
 Without version control, it is sufficient to obtain \ivoatex\ from a
 distribution site and unpack it into the future document directory:
@@ -208,7 +225,7 @@ the recommended and more elegant way is to use \texttt{svn:externals}.
 \begin{lstlisting}[language=sh]
 export VOLUTEBASE="https://volute.googlecode.com/svn/trunk/projects"
 export WG=?????
-# this would be the Working Group as represented in
+# this would be the Working Group name as represented in
 # volute subdirectories: dal, dm, edu, grid, registry
 svn import $DOCNAME $VOLUTEBASE/$WG/$DOCNAME
 rmdir $DOCNAME
@@ -236,8 +253,8 @@ cp ivoatex/document.template $DOCNAME.tex
 cp ivoatex/archdiag.png .
 \end{lstlisting}
 
-The next step is to fill out the makefile template.  This template
-inversion 0.4 looks like this:
+The next step is to fill out the makefile template.  
+In \ivoatex\ version 0.4, this template looks like this:
 
 \begin{lstlisting}[language=make]
 # ivoatex Makefile.  The ivoatex/README for the targets available.
@@ -292,8 +309,9 @@ As illustrated in the template, both \texword{author} and
 \texword{author}, it should normally point to the respective person's
 page in the IVOA wiki, for \texword{previousversion}, it should point to
 the landing page of the respective document version in the IVOA document
-repository.  Further automation for maintaining document history is
-envisioned.
+repository.  Further automation for maintaining document history
+certainly is desirable, and the authors welcome ideas for how this might
+look like.
 
 The architecture diagram specimen \texttt{archdiag.png} is only
 necessary for documents on the recommendation track (i.e., notes in
@@ -337,14 +355,19 @@ Simply running \texttt{latex} or \texttt{pdflatex} directly
 (rather than through make) is \emph{not} supported with \ivoatex.  Due
 to the non-global installation of the support files, the \TeX\ run needs
 a special environment that is prepared by the makefile.
+
+Also note that bibliography processing must be initated manually by
+running \texttt{make biblio}; unless authors checked in the bbl file
+this produces, this must be run after a document checkout.
 \end{admonition}
 
 \subsection{Examples}
 
 Examples for \ivoatex\ use include this 
-document\footnote{http://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc}
+document\footnote{https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc}
 or
 RegTAP\footnote{https://volute.googlecode.com/svn/trunk/projects/registry/regtap}.
+
 
 \section{Authoring documents}
 \label{sect:authoring}
@@ -597,20 +620,20 @@ from its source.
 
 In order to make it support rich, semantic markup, \ivoatex\ needs to be
 continuosly developed.  In particular, it is good practice to define
-macros for marking up values of certain datatypes, with \ivoatex's
-\texword{xmlel} a first example.  Thus, whenever a document has multiple
+macros for marking up values of certain datatypes, as with \ivoatex's
+\texword{xmlel} and \texword{vorent}.  
+Thus, whenever a document has multiple
 instances of such values, authors should define macros and use these.
-For instance, RegTAP deals with concepts from VOResource and its own
+For instance, RegTAP deals with lots of concepts from its own
 database schema and hence has
 
 \begin{lstlisting}[language=TeX]
 \definecolor{rtcolor}{rgb}{0.15,0.4,0.3}
 \newcommand{\rtent}[1]{\texttt{\color{rtcolor} #1}}
-\newcommand{\vorent}[1]{\textsc{#1}}
 \end{lstlisting}
 
 in its document preamble to
-define markup for ``RegTAP entity'' and ``VOResource entity'', whereas
+define markup for ``RegTAP entity'', whereas
 this note, as it mentions many words with a special meaning to \TeX, has
 
 \begin{lstlisting}[language=TeX]
@@ -618,7 +641,7 @@ this note, as it mentions many words with a special meaning to \TeX, has
 \newcommand{\texword}[1]{\texttt{\color{texcolor} #1}}
 \end{lstlisting}
 
-Such macros would be included in \ivoatex\ itself rather than an
+Such macros will be included in \ivoatex\ itself rather than an
 individual document's preamble as they prove useful in multiple
 documents.
 
@@ -652,8 +675,9 @@ can be selected (without the \texword{newif} mentioned in the tth
 documentation, as that is already performed in \texttt{tthdefs.tex}.
 
 For instance, RegTAP has many inline tables that need special spacing
-the PDF rendering, whereas normal tables will do in HTML.  It therefore
-has the definitions
+the PDF rendering, whereas normal tables will do for them
+in HTML.  It therefore
+has in its preamble the definitions
 
 \begin{lstlisting}
 \iftth
@@ -696,7 +720,7 @@ TCG chair is unsatisfactory on both technical and organisational
 grounds.  A common system allowing their easy geenration based on SVG or
 one of the \TeX-based graphics engines should be written.
 
-A major drawback of the HTML output is that paragraphs are not actually
+A major drawback of \ivoatex's HTML output is that paragraphs are not actually
 marked up as such.  Due to the \TeX\ processing model, their
 reconstruction is non-trivial.  Hence in the generated HTML,
 source-level paragraphs are rendered as text nodes separated by empty
