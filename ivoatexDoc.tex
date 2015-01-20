@@ -87,13 +87,13 @@ writing HTML tags.
 
 Other options considered for source languages included docbook or one of
 the newer lightweight markup languages (ReStructuredText, markdown,
-etc).  In each case, there were concers either regarding the system's power
+etc).  In each case, there were concerns either regarding the system's power
 and flexibility or its ease of installation and maintenance.
 
 Meanwhile, several documents -- to mention just a few, SAMP, VOTable,
 and VOUnits -- had successfully used \TeX-based systems typically
 derived from work done in the early 2000s by Sebasti\'en Derriere.
-\ivoatex\ essentially is a generalisation of these standard's formatting
+\ivoatex\ essentially is a generalisation of these standards' formatting
 systems, also inheriting from them the use of the \texttt{make} tool to
 automate workflows.
 
@@ -331,7 +331,7 @@ The PDF version of the document is built by the makefile's default rule,
 so running \texttt{make} will usually by enough.  This will produce a
 file \texttt{\$DOCNAME.pdf}.  If the makefile in the document directory
 defines own rules, overriding the default target, this file name will
-have to be given explicitely as the target name.
+have to be given explicitly as the target name.
 
 Other makefile targets for author use include:
 
@@ -516,11 +516,11 @@ variable.
 From \texttt{VECTORFIGURES}, \ivoatex\ arranges that, when a PDF figure 
 \texttt{foo.pdf} is used, the HTML target depends on called
 \texttt{foo.pdf.png}.  This PNG can be generated automatically by
-\ivoatex\ using a combination of ghostscript and imagemagic.  It may
+\ivoatex\ using a combination of ghostscript and ImageMagick.  It may
 sometimes be preferable to perform a custom conversion by hand (e.g.,
 more compact representation with bilevel source images), in which case
 the pre-rendered PNG should be included with version control.  This also
-has the advantage that neither ghostscript nor imagemagic are build
+has the advantage that neither ghostscript nor ImageMagick are build
 dependencies of the document.
 
 \subsection{Tables}
@@ -619,7 +619,7 @@ from its source.
 \subsection{Semantic Markup}
 
 In order to make it support rich, semantic markup, \ivoatex\ needs to be
-continuosly developed.  In particular, it is good practice to define
+continuously developed.  In particular, it is good practice to define
 macros for marking up values of certain datatypes, as with \ivoatex's
 \texword{xmlel} and \texword{vorent}.  
 Thus, whenever a document has multiple
@@ -717,7 +717,7 @@ some default framework for doing this were provided.
 
 The inclusion of IVOA architecture diagrams as bitmaps prepared by the
 TCG chair is unsatisfactory on both technical and organisational
-grounds.  A common system allowing their easy geenration based on SVG or
+grounds.  A common system allowing their easy generation based on SVG or
 one of the \TeX-based graphics engines should be written.
 
 A major drawback of \ivoatex's HTML output is that paragraphs are not actually
