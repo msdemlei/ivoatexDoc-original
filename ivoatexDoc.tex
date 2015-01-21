@@ -152,32 +152,37 @@ On Windows, it is recommended to run \ivoatex\ within cygwin, where all
 dependencies can easily be installed from cygwin's repository.  On
 Debian-derived systems, the dependencies should be present after
 running a distribution-specific adaption of
-
 \begin{lstlisting}[language=sh]
 apt-get install build-essential texlive-full zip xsltproc\
   imagemagick ghostscript cm-super
 \end{lstlisting}
-
 (cm-super contains vector versions of computer modern fonts in T1
 encoding), on RPM-based systems something like
-
 \begin{lstlisting}[language=sh]
 yum install texlive-scheme-full libxslt make gcc zip\
   ImageMagick ghostscript
 \end{lstlisting}
-
 should pull in everything that is necessary.
 
 With Mac OS X, a convenient way to obtain the dependencies is to install
 MacPorts\footnote{\url{https://www.macports.org/}} and then run
-
 \begin{lstlisting}[language=sh]
-port install ImageMagick  libxslt ghostscript  texlive +full
+port install ImageMagick  libxslt ghostscript +full
 \end{lstlisting}
+The canonical OS\,X \TeX\ distribution is the Mac\TeX\ version of
+\TeX Live\footnote{\url{https://www.tug.org/mactex/}}.  It is also
+possible to build \TeX\ using MacPorts (with \texttt{port install
+  texlive}), but this may result in a slightly non-standard
+distribution.\footnote{See
+  \url{http://tex.stackexchange.com/questions/97183/}.
+  Also, MacPorts does add
+  \texttt{texlive} as a dependency on many packages, and so frequently
+  \emph{insists} on trying to build it; if you want to prevent this,
+  there is some discussion at
+  \url{http://comments.gmane.org/gmane.os.apple.macports.user/21526}.}
 
 To see if the prerequisites are there and compatible with \ivoatex, try
 building this document from its volute source:
-
 \begin{lstlisting}[language=sh]
 svn co https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc
 cd ivoatexDoc
@@ -186,7 +191,6 @@ make forcetex # make a PDF ignoring timestamps
 make ivoatexDoc.html  # make an html
 make package # make a zipfile for IVOA submission
 \end{lstlisting}
-
 Messages about unexpected end tags in HTML generation are
 (unfortunately) expected at this point and no reason for alarm.
 
@@ -324,7 +328,7 @@ page in the IVOA wiki, for \texword{previousversion}, it should point to
 the landing page of the respective document version in the IVOA document
 repository.  Further automation for maintaining document history
 certainly is desirable, and the authors welcome ideas for how this might
-look like.
+look.
 
 The architecture diagram specimen \texttt{archdiag.png} is only
 necessary for documents on the recommendation track (i.e., notes in
@@ -343,7 +347,7 @@ large diffs for minor edits.
 The PDF version of the document is built by the makefile's default rule,
 so running \texttt{make} will usually by enough.  This will produce a
 file \texttt{\$DOCNAME.pdf}.  If the makefile in the document directory
-defines own rules, overriding the default target, this file name will
+defines its own rules, overriding the default target, this file name will
 have to be given explicitly as the target name.
 
 Other makefile targets for author use include:
@@ -416,7 +420,8 @@ Also, they are floating insertions.
 \end{lstlisting}
 \item[\texword{bigdescription}] This is an environment for definition
 lists in the style of HTML \xmlel{dl}, and it will be translated into
-one.  Use \verb|\item[term]| for the term to be defined.
+one.  Use \verb|\item[term]| for the term to be defined
+(this current list is a \verb|{bigdescription}|).
 \end{bigdescription}
 
 The intention behind macros like \texword{xmlel} and \texword{vorent} is
@@ -433,13 +438,11 @@ Thus, all \ivoatex\ documents must have an abstract within the
 \ivoatex\ documents should use the \texword{listings} package to include
 source code snippets, XML fragments and the like.  It can be used after
 a set of declarations like
-
 \begin{lstlisting}[language=TeX]
 \usepackage{listings}
 \lstloadlanguages{XML,sh}
 \lstset{flexiblecolumns=true,numberstyle=\small,numbers=left}
 \end{lstlisting}
-
 is included in the document preamble (i.e., before its
 \verb|\begin{document}|). The languages preloaded should be adapted to
 the document's needs. Numbering, of course, is optional.  Additional
@@ -447,22 +450,17 @@ languages supported that are likely relevant in a VO context include C,
 fortran, python, SQL, and java, specified as above case-insensitively.
 
 Actual listings are obtained with code like
-
 \begin{verbatim}
 \begin{lstlisting}[language=XML]
 <example id="empty"/>
 \end{lstlisting}
 \end{verbatim}
-
 Alternatively, entire files can be included like this:
-
 \begin{verbatim}
 \lstinputlisting[language=XML]{makeutypes.xslt}
 \end{verbatim}
-
 In the PDF rendering, the listings are pretty-printed.  In the HTML
-rendering, the content is simply included in \xmlel{pre} elements right
-now.
+rendering, the content is, currently, simply included in \xmlel{pre} elements.
 
 \subsection{References and Bibliography}
 
@@ -486,11 +484,9 @@ its main repository.  Authors expecting that a reference really will not
 be reused in other documents can have a local bibliography as well.
 They will then need to amend the bibliography definition near the end of
 the source file to, for instance,
-
 \begin{lstlisting}[language=tex]
 \bibliography{ivoatex/ivoabib,local}
 \end{lstlisting}
-
 (assuming the local records are stored in \texttt{local.bib}).
 
 Changes that introduce new references or additions to the bibliography
@@ -502,7 +498,6 @@ require that \texttt{make biblio} is run afterwards.
 In practice, authors are encouraged to restrict themselves to JPEG, PNG,
 and possibly GIF.  Currently, identical images are used for both PDF and
 HTML renderings.  The recommended pattern for figures is
-
 \begin{lstlisting}[language=tex]
 \begin{figure}[thm]
 \begin{center}
@@ -512,8 +507,7 @@ HTML renderings.  The recommended pattern for figures is
 \label{fig:mydiag}
 \end{figure}
 \end{lstlisting}
-
--- this gives \LaTeX\ some leeway in placing the figure, defines the image
+This gives \LaTeX\ some leeway in placing the figure, defines the image
 size in units of the page width, and centers the image itself.
 
 All bitmap graphics in a document must  be listed in the makefile's
@@ -542,7 +536,6 @@ dependencies of the document.
 
 In tables, rules should be used sparingly.  The standard pattern for tables is
 something like
-
 \begin{lstlisting}
 \begin{table}[thm]
 \begin{tabular}{p{0.35\textwidth}p{0.64\textwidth}}
@@ -572,41 +565,36 @@ the preferred way to include links in \ivoatex\ documents is to use the
 this way, the link remains (to some extent) usable even if the document
 is printed.  The alternative two-argument \texword{href} should
 generally be avoided for that reason.  For instance,
-
 \begin{lstlisting}
 (this is bad:) The \href{http://ivoa.net}{IVOA} has issued
 \href{http://ivoa.net/documents}{many standards}.
 \end{lstlisting}
-
 would severely degrade when printed and is hence discouraged, whereas
-
 \begin{lstlisting}
 The IVOA\footnote{\url{http://ivoa.net}} has issued many 
 standards, all of which can be retrieved from 
 \url{http://ivoa.net/documents}.
 \end{lstlisting}
+works properly on all of \ivoatex's target media.
 
-properly works on all of \ivoatex's target media.
-
-\subsection{Tools for Redaction}
+\subsection{Editorial tools}
 
 When authoring standards, it is sometimes necessary to include
-redactional comments of the type ``Need to clarify'' or ``Specification
+editorial comments of the type ``Need to clarify'' or ``Specification
 incomplete''.  We recommend to use the todonotes package for such
 pieces of text\footnote{Full documentation is available at
 \url{http://www.tex.ac.uk/CTAN/macros/latex/contrib/todonotes/todonotes.pdf}.}.
 The recommended usage is like
-
 \begin{lstlisting}
 ...
 \usepackage{todonotes}
 ...
 \begin{document}
-\todo{This is an example for a redactional note}.
+\todo{This is an example for a editorial note}.
 \end{lstlisting}
 
 A rendering of such a to-do note is shown in this paragraph's
-margin\todo{This is an example for a redactional note}. In HTML output,
+margin\todo{This is an example for a editorial note}. In HTML output,
 only the simple \texword{todo} macro without options is supported, and
 text is just displayed inline right now.  Note in particular that
 todonote's \texword{obeyDraft} and \texword{obeyFinal} package options
@@ -675,21 +663,17 @@ Thus, whenever a document has multiple
 instances of such values, authors should define macros and use these.
 For instance, RegTAP deals with lots of concepts from its own
 database schema and hence has
-
 \begin{lstlisting}[language=TeX]
 \definecolor{rtcolor}{rgb}{0.15,0.4,0.3}
 \newcommand{\rtent}[1]{\texttt{\color{rtcolor} #1}}
 \end{lstlisting}
-
 in its document preamble to
 define markup for ``RegTAP entity'', whereas
 this note, as it mentions many words with a special meaning to \TeX, has
-
 \begin{lstlisting}[language=TeX]
 \definecolor{texcolor}{rgb}{0.4,0.1,0.1}
 \newcommand{\texword}[1]{\texttt{\color{texcolor} #1}}
 \end{lstlisting}
-
 Such macros will be included in \ivoatex\ itself rather than an
 individual document's preamble as they prove useful in multiple
 documents.
@@ -701,7 +685,6 @@ common packages are natively supported, but those that are not in
 general need specific handling.  For instance, the \texword{lstlisting}
 environment is not supported by tth, and hence in
 \texttt{tthdefs.tex} there is
-
 \begin{lstlisting}[language=TeX]
 \newenvironment{lstlisting}[1][None]{%
     \begin{html}<pre class="listing">\end{html}
@@ -713,7 +696,6 @@ environment is not supported by tth, and hence in
   \verbatiminput{#2}
 }
 \end{lstlisting}
-
 to have some sensible behaviour for the \ivoatex-supported constructs of
 the package.
 
@@ -727,7 +709,6 @@ For instance, RegTAP has many inline tables that need special spacing
 the PDF rendering, whereas normal tables will do for them
 in HTML.  It therefore
 has in its preamble the definitions
-
 \begin{lstlisting}
 \iftth
   \newenvironment{inlinetable}{}{}
