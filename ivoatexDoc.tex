@@ -6,6 +6,8 @@
 \lstset{flexiblecolumns=true,numberstyle=\small,numbers=left,
   identifierstyle=\texttt,defaultdialect=[latex]tex, language=tex}
 
+\usepackage{todonotes}
+
 \usepackage[utf8]{inputenc}
 
 \definecolor{texcolor}{rgb}{0.4,0.1,0.1}
@@ -586,6 +588,40 @@ standards, all of which can be retrieved from
 
 properly works on all of \ivoatex's target media.
 
+\subsection{Tools for Redaction}
+
+When authoring standards, it is sometimes necessary to include
+redactional comments of the type ``Need to clarify'' or ``Specification
+incomplete''.  We recommend to use the todonotes package for such
+pieces of text\footnote{Full documentation is available at
+\url{http://www.tex.ac.uk/CTAN/macros/latex/contrib/todonotes/todonotes.pdf}.}.
+The recommended usage is like
+
+\begin{lstlisting}
+...
+\usepackage{todonotes}
+...
+\begin{document}
+\todo{This is an example for a redactional note}.
+\end{lstlisting}
+
+A rendering of such a to-do note is shown in this paragraph's
+margin\todo{This is an example for a redactional note}. In HTML output,
+only the simple \texword{todo} macro without options is supported, and
+text is just displayed inline right now.  Note in particular that
+todonote's \texword{obeyDraft} and \texword{obeyFinal} package options
+are ignored).  Although \ivoatex\ does not enforce it (yet), finished
+recommendations should have no todo items in them.
+
+While todonotes is a useful tool for standards development, we
+discourage the use of packages to mark up changes, as maintaining that
+markup usually is very hard, and version control offers a more
+manageable solution to the problem such packages attempt to solve; this
+is in true in particular if all authors try to keep svn diffs useful by
+not regularly reflowing text, making thematic commits of reasonable
+size, and giving useful and expressive log messages.
+
+
 \section{Customisation and Development}
 \label{sect:impl}
 
@@ -739,6 +775,7 @@ reconstruction is non-trivial.  Hence in the generated HTML,
 source-level paragraphs are rendered as text nodes separated by empty
 HTML paragraph elements.  It would probably be possible to rectify this
 in the XSLT postprocessing.
+
 
 \appendix
 \section{Changes from Previous Versions}
