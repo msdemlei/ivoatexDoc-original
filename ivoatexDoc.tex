@@ -16,6 +16,9 @@
 \ivoagroup{Standards and Processes}
 
 \author[http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/MarkusDemleitner]{Markus Demleitner}
+\author[http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/MarkTaylor]{Mark Taylor}
+\author[http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/PaulHarrison]{Paul Harrison}
+\author[http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/MarcoMolinaro]{Marco Molinaro}
 
 \editor{Markus Demleitner}
 
@@ -118,7 +121,10 @@ and desirable developments.
 \ivoatex\ is designed to work more or less out of the box on common
 POSIX-compliant systems; no non-free software is required for operation.
 Its main uncommon dependency, the tth translator, is delivered with the
-distribution and built on-demand.  As \ivoatex's tth may at times offer
+distribution and built on-demand. It is a relatively compact program
+written in highly portable C generated through lex that translates LaTeX
+to HTML.
+As \ivoatex's tth may at times offer
 some enhancements over the upstream tth, using a system-installed tth is
 discouraged.
 
@@ -160,7 +166,12 @@ yum install texlive-scheme-full libxslt make gcc zip\
 
 should pull in everything that is necessary.
 
-TODO: OS X?
+With Mac OS X, a convenient way to obtain the dependencies is to install
+MacPorts\footnote{\url{https://www.macports.org/}} and then run
+
+\begin{lstlisting}[language=sh]
+port install ImageMagick  libxslt ghostscript  texlive +full
+\end{lstlisting}
 
 To see if the prerequisites are there and compatible with \ivoatex, try
 building this document from its volute source:
@@ -367,6 +378,8 @@ Examples for \ivoatex\ use include this
 document\footnote{https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc}
 or
 RegTAP\footnote{https://volute.googlecode.com/svn/trunk/projects/registry/regtap}.
+At the time of writing, about half a dozen IVOA documents within Volute
+are based on \ivoatex.
 
 
 \section{Authoring documents}
