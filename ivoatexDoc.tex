@@ -615,6 +615,42 @@ not regularly reflowing text, making thematic commits of reasonable
 size, and giving useful and expressive log messages.
 
 
+\subsection{Version Control System Information}
+
+It is recommended to include basic metadata obtained from the version
+control system into \ivoatex~Documents where available.  Basic support
+for Volute, i.e., subversion is built into \ivoatex.  To enable the
+the display of the revision and date of the last commit, subversion's
+keyword substitution needs to be enabled on the main document file.
+While any keys might be used, \ivoatex~wants:
+
+\begin{lstlisting}[language=sh]
+svn propset svn:keywords "Date Rev URL" $DOCNAME.tex
+\end{lstlisting}
+
+In the document itself, the text for subversion's replacement needs to
+be included.  Inititally, this must look like this:
+
+\lstinputlisting[language=tex]{svnsubstitution.tex}
+
+Subversion will, at every commit, enter the current values in a
+controlled fashion, which will then be picked up by \ivoatex's macros.
+
+For non-English locales, subversion's substitution poses the problem that
+localized information will be entered into the document, which is
+unwelcome for many resaons (non-ASCII characters, ambiguous date
+formats).  We therefore recommend to run SVN in the C
+locale, at least while working on IVOA documents.  Users concerned
+could in a Bourne-like shell use a construct like
+
+\begin{lstlisting}[language=sh]
+alias svn='env LC_ALL=C svn'
+\end{lstlisting}
+
+The authors gladly will support efforts to add support for other version
+control systems to \ivoatex.
+
+
 \section{Customisation and Development}
 \label{sect:impl}
 
