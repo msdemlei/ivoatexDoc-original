@@ -13,6 +13,9 @@
 \definecolor{texcolor}{rgb}{0.4,0.1,0.1}
 \newcommand{\texword}[1]{\texttt{\color{texcolor} #1}}
 
+\iftth
+  \newcommand{\BibTeX}{BibTeX}
+\fi
 
 \title{The \ivoatex\ Document Preparation System}
 
@@ -128,10 +131,11 @@ and desirable developments.
 
 \ivoatex\ is designed to work more or less out of the box on common
 POSIX-compliant systems; no non-free software is required for operation.
-Its main uncommon dependency, the tth translator, is delivered with the
-distribution and built on-demand. It is a relatively compact program
-written in highly portable C generated through lex that translates LaTeX
-to HTML.
+Its main uncommon dependency is the tth translator, which is a relatively 
+compact program
+written in highly portable C generated through lex used to translate LaTeX
+to HTML.  As it is compact and portable, it is delivered with
+\ivoatex~and built on demand.
 As \ivoatex's tth may at times offer
 some enhancements over the upstream tth, using a system-installed tth is
 discouraged.
@@ -155,12 +159,14 @@ is to be processed.
 \end{itemize}
 
 On Windows, it is recommended to run \ivoatex\ within cygwin, where all
-dependencies can easily be installed from cygwin's repository.  On
+dependencies can easily be installed from cygwin's repository.  
+
+On
 Debian-derived systems, the dependencies should be present after
 running a distribution-specific adaption of
 \begin{lstlisting}[language=sh]
-apt-get install build-essential texlive-full zip xsltproc\
-  imagemagick ghostscript cm-super
+apt-get install build-essential texlive-latex-extra zip xsltproc\
+  texlive-bibtex-extra imagemagick ghostscript cm-super
 \end{lstlisting}
 (cm-super contains vector versions of computer modern fonts in T1
 encoding), on RPM-based systems something like
@@ -188,17 +194,19 @@ distribution.\footnote{See
   \url{http://comments.gmane.org/gmane.os.apple.macports.user/21526}.}
 
 To see if the prerequisites are there and compatible with \ivoatex, try
-building this document from its volute source:
+building an updated version of this document from its volute source:
 \begin{lstlisting}[language=sh]
 svn co https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc
 cd ivoatexDoc
 make biblio   # update the bibliography
 make forcetex # make a PDF ignoring timestamps
-make ivoatexDoc.html  # make an html
+make ivoatexDoc.html  # make an html document
 make package # make a zipfile for IVOA submission
 \end{lstlisting}
-Messages about unexpected end tags in HTML generation are
-(unfortunately) expected at this point and no reason for alarm.
+Various diagnostics both from tth and from xsltproc (unknown commands,
+unexpected end tags, and the like) are
+expected at this point and no reason for alarm; we work on reducing the
+amount of false alarm error messages.
 
 \subsection{Quick Start}
 
@@ -260,7 +268,8 @@ svn update
 svn propset svn:ignore . --file ivoatex/svn-ignore.txt
 \end{lstlisting}
 
-This has the advantage that you get updates automatically and that it is 
+This has the advantage that \ivoatex~updates are automatically pulled in
+and that it is
 trivial to feed back bibliography additions and patches to \ivoatex\
 itself.
 
@@ -307,7 +316,7 @@ VECTORFIGURES =
 include ivoatex/Makefile
 \end{lstlisting}
 
-All lines with question marks need to be filled out.  The document date
+All lines with question marks must be filled out.  The document date
 is the publication date, which can be significantly different from the
 current date.  After its initial setting, it should only be changed at
 the time of submission to the document archive.  It is always in
@@ -352,9 +361,7 @@ large diffs for minor edits.
 
 The PDF version of the document is built by the makefile's default rule,
 so running \texttt{make} will usually by enough.  This will produce a
-file \texttt{\$DOCNAME.pdf}.  If the makefile in the document directory
-defines its own rules, overriding the default target, this file name will
-have to be given explicitly as the target name.
+file \texttt{\$DOCNAME.pdf}.
 
 Other makefile targets for author use include:
 
@@ -364,7 +371,11 @@ running this is necessary after one of the bibliography files is updated
 or when a new publication is referenced from the document.
 \item \texttt{forecetex} rebuilds the PDF unconditionally (e.g., when TeX
 asks to be rerun)
-\item \texttt{\$DOCNAME.html} generates an HTML rendering of the document
+\item \texttt{\$DOCNAME.html} generates an HTML rendering of the
+document; at this point, this will typically emit quite a bit of
+spurious diagnostics.  Unfortunately, real problems may hide within.  In
+the end, we currently recommend a visual inspection of the resulting
+HTML before submission.
 \item \texttt{package} generates a zip file containing everything needed
 for publication in the IVOA's document repository.   Obviously, 
 \texttt{DOCVERSION}, \texttt{DOCTYPE}, and \texttt{DOCDATE} in the
@@ -427,7 +438,7 @@ Also, they are floating insertions.
 \item[\texword{bigdescription}] This is an environment for definition
 lists in the style of HTML \xmlel{dl}, and it will be translated into
 one.  Use \verb|\item[term]| for the term to be defined
-(this current list is a \verb|{bigdescription}|).
+(the construct this item is in is a \texword{bigdescription}).
 \end{bigdescription}
 
 The intention behind macros like \texword{xmlel} and \texword{vorent} is
@@ -473,8 +484,8 @@ rendering, the content is, currently, simply included in \xmlel{pre} elements.
 \ivoatex\ documents should use natbib and \BibTeX\ to manage references.
 The package comes with a default bibliography in
 \texttt{ivoatex/ivoabib.bib} containing records for many publications
-likely to be cited by IVOA documents as well as (soon) all IVOA
-documents already published either as recommendation or note. 
+likely to be cited by IVOA documents.  An additional bibliograhy of
+IVOA documents present in the document repository will be added soon.
 
 As usual in natbib, actual references are made through either
 \verb|\citep{tag}|, yielding a form like ``(Einstein 1905)'',
@@ -499,6 +510,8 @@ Changes that introduce new references or additions to the bibliography
 require that \texttt{make biblio} is run afterwards.
 
 \subsection{Graphics}
+
+\subsubsection{Bitmap Graphics}
 
 \ivoatex\ supports all bitmap graphics formats that pdflatex supports.
 In practice, authors are encouraged to restrict themselves to JPEG, PNG,
@@ -534,7 +547,8 @@ From \texttt{VECTORFIGURES}, \ivoatex\ arranges that, when a PDF figure
 \ivoatex\ using a combination of ghostscript and ImageMagick.  It may
 sometimes be preferable to perform a custom conversion by hand (e.g.,
 more compact representation with bilevel source images), in which case
-the pre-rendered PNG should be included with version control.  This also
+the pre-rendered PNG should be included in the version controled
+repository.  This also
 has the advantage that neither ghostscript nor ImageMagick are build
 dependencies of the document.
 
@@ -570,7 +584,7 @@ the preferred way to include links in \ivoatex\ documents is to use the
 \texword{url} macro, i.e., use the URL itself as the anchor text.  In
 this way, the link remains (to some extent) usable even if the document
 is printed.  The alternative two-argument \texword{href} should
-generally be avoided for that reason.  For instance,
+generally be avoided as it fails on paper.  For instance,
 \begin{lstlisting}
 (this is bad:) The \href{http://ivoa.net}{IVOA} has issued
 \href{http://ivoa.net/documents}{many standards}.
@@ -599,36 +613,34 @@ The recommended usage is like
 \todo{This is an example for a editorial note}.
 \end{lstlisting}
 
-A rendering of such a to-do note is shown in this paragraph's
-margin\todo{This is an example for a editorial note}. In HTML output,
+A rendering of such a to-do note is shown in this paragraph
+\todo{This is an example for a editorial note}. In HTML output,
 only the simple \texword{todo} macro without options is supported, and
-text is just displayed inline right now.  Note in particular that
+text is simply displayed inline right now.  Note in particular that
 todonote's \texword{obeyDraft} and \texword{obeyFinal} package options
-are ignored).  Although \ivoatex\ does not enforce it (yet), finished
+are ignored.  Although \ivoatex\ does not enforce it (yet), finished
 recommendations should have no todo items in them.
 
 While todonotes is a useful tool for standards development, we
 discourage the use of packages to mark up changes, as maintaining such
 markup usually is very hard, and version control offers a more
-manageable solution to the problem such packages attempt to solve; this
-is in true in particular if all authors try to keep svn diffs useful by
-not regularly reflowing text, making thematic commits of reasonable
-size, and giving useful and expressive log messages.
-
+manageable solution to the problem such packages attempt to solve.
 
 \subsection{Version Control System Information}
 
 It is recommended to include basic metadata obtained from the version
 control system into \ivoatex~Documents where available.  Basic support
-for Volute, i.e., subversion is built into \ivoatex.  To enable the
-the display of the revision and date of the last commit, subversion's
-keyword substitution needs to be enabled on the main document file.
-While any keys might be used, \ivoatex~wants:
+for Volute (i.e., subversion) is built into \ivoatex.  It is based on
+subversion's
+keyword substitution, which therefore needs to be enabled on the 
+main document source file.
+While any keys might be used, \ivoatex's default support deals with:
 
 \begin{lstlisting}[language=sh]
 svn propset svn:keywords "Date Rev URL" $DOCNAME.tex
 \end{lstlisting}
 
+(only Rev is mandatory).
 In the document itself, the text for subversion's replacement needs to
 be included.  Inititally, this must look like this:
 
@@ -641,12 +653,15 @@ For non-English locales, subversion's substitution poses the problem that
 localized information will be entered into the document, which is
 unwelcome for many resaons (non-ASCII characters, ambiguous date
 formats).  We therefore recommend to run SVN in the C
-locale, at least while working on IVOA documents.  Users concerned
+locale, at least while working on IVOA documents.  Users affected with
+on-C locales
 could in a Bourne-like shell use a construct like
 
 \begin{lstlisting}[language=sh]
-alias svn='env LC_ALL=C svn'
+alias svn='LC_ALL=C svn'
 \end{lstlisting}
+
+and forget about the problem.
 
 The authors gladly will support efforts to add support for other version
 control systems to \ivoatex.
@@ -665,12 +680,6 @@ The central files in \ivoatex\ processing are
 
 \begin{bigdescription}
 \item[ivoa.cls] The class file, inheriting from \LaTeX's article class.
-In it, several sections are delimited by comments like
-
-\begin{lstlisting}
-%%%%%%%%%%%%%%%%%%% Metadata definition macros
-\end{lstlisting}
-
 The file defines the markup rules for PDF processing, including
 titlepage generation and extra macros and environments.  Its content is
 ignored for HTML generation.
@@ -738,7 +747,7 @@ environment is not supported by tth, and hence in
   \verbatiminput{#2}
 }
 \end{lstlisting}
-to have some sensible behaviour for the \ivoatex-supported constructs of
+to have some sensible behavior for the \ivoatex-supported constructs of
 the package.
 
 When a document requires special markup, it is likely that similarly
