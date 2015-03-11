@@ -487,7 +487,7 @@ The package comes with a default bibliography in
 likely to be cited by IVOA documents.  An additional bibliograhy of
 IVOA documents present in the document repository will be added soon.
 
-As usual in natbib, actual references are made through either
+As usual in natbib, actual references are made through either writing
 \verb|\citep{tag}|, yielding a form like ``(Einstein 1905)'',
 or \verb|\citet{tag}|, yielding a form like ``Einstein (1905)''.
 \ivoatex\ does not support variant forms of citep and citet (i.e., those
@@ -597,6 +597,17 @@ standards, all of which can be retrieved from
 \end{lstlisting}
 works properly on all of \ivoatex's target media.
 
+With non-HTTP URIs, it is recommended to use hyperref's
+\texword{nolinkurl} macro (rather than an unadorned \texword{textt} or
+similar); advantages include that line breaking is better with
+nolinkurl, less manual escaping is necessary, and, if desired, 
+such URIs can be more easily styled.  An example:
+
+\begin{lstlisting}
+The value of the \xmlel{standardID} attribute will be
+be \nolinkurl{ivo://ivoa.net/std/Registry#OAI-2.0}.
+\end{lstlisting}
+
 \subsection{Editorial tools}
 
 When authoring standards, it is sometimes necessary to include
@@ -648,6 +659,8 @@ be included.  Inititally, this must look like this:
 
 Subversion will, at every commit, enter the current values in a
 controlled fashion, which will then be picked up by \ivoatex's macros.
+Due to the way this information is processed by \TeX, after adding the above
+text, a commit must be made before the document can be built again.
 
 For non-English locales, subversion's substitution poses the problem that
 localized information will be entered into the document, which is
