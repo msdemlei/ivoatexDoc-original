@@ -458,13 +458,16 @@ a set of declarations like
 \begin{lstlisting}[language=TeX]
 \usepackage{listings}
 \lstloadlanguages{XML,sh}
-\lstset{flexiblecolumns=true,numberstyle=\small,numbers=left}
+\lstset{flexiblecolumns=true,basicstyle=\small,tagstyle=\ttfamily}
 \end{lstlisting}
 is included in the document preamble (i.e., before its
 \verb|\begin{document}|). The languages preloaded should be adapted to
-the document's needs. Numbering, of course, is optional.  Additional
+the document's needs.  Additional
 languages supported that are likely relevant in a VO context include C,
 fortran, python, SQL, and java, specified as above case-insensitively.
+
+The setup in the example (flexible columns, small size, tags in
+typewriter) is recommended for including XML source.
 
 Actual listings are obtained with code like
 \begin{verbatim}
@@ -474,7 +477,7 @@ Actual listings are obtained with code like
 \end{verbatim}
 Alternatively, entire files can be included like this:
 \begin{verbatim}
-\lstinputlisting[language=XML]{makeutypes.xslt}
+\lstinputlisting[language=XSLT]{makeutypes.xslt}
 \end{verbatim}
 In the PDF rendering, the listings are pretty-printed.  In the HTML
 rendering, the content is, currently, simply included in \xmlel{pre} elements.
