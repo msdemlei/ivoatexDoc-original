@@ -4,7 +4,7 @@
 \usepackage{listings}
 \lstloadlanguages{sh,make,[latex]tex}
 \lstset{flexiblecolumns=true,numberstyle=\small,numbers=left,
-  identifierstyle=\texttt,defaultdialect=[latex]tex, language=tex}
+  identifierstyle=\texttt,defaultdialect=[latex]tex,language=tex}
 
 \usepackage{todonotes}
 
@@ -176,7 +176,7 @@ yum install texlive-scheme-full libxslt make gcc zip\
 \end{lstlisting}
 should pull in everything that is necessary.
 
-With Mac OS X, a convenient way to obtain the dependencies is to install
+With OS X, a convenient way to obtain the dependencies is to install
 MacPorts\footnote{\url{https://www.macports.org/}} and then run
 \begin{lstlisting}[language=sh]
 port install ImageMagick  libxslt ghostscript +full
@@ -481,6 +481,19 @@ Alternatively, entire files can be included like this:
 \end{verbatim}
 In the PDF rendering, the listings are pretty-printed.  In the HTML
 rendering, the content is, currently, simply included in \xmlel{pre} elements.
+
+If a more compact rendering of listings is desired, for instance,
+because larger portions of source code is desired, listings'
+\texword{basicstyle} option should be used together with one of LaTeX
+standard size macros.  This could be in the argument of \texword{lstset}
+in the preamble for a global setting, or on a case-by-case basis as in
+
+\begin{verbatim}
+\begin{lstlisting}[language=tex,basicstyle=\footnotesize]
+Other sizes include \tiny, \scriptsize, \small, \normalsize, \large
+\end{lstlisting}
+\end{verbatim}
+
 
 \subsection{References and Bibliography}
 
