@@ -288,7 +288,7 @@ cp ivoatex/archdiag.png .
 The next step is to fill out the makefile template.  
 In \ivoatex\ version 0.4, this template looks like this:
 
-\begin{lstlisting}[language=make]
+\begin{lstlisting}[language=make,basicstyle=\footnotesize]
 # ivoatex Makefile.  The ivoatex/README for the targets available.
 
 # short name of your document (e.g., RegTAP)
@@ -483,17 +483,19 @@ In the PDF rendering, the listings are pretty-printed.  In the HTML
 rendering, the content is, currently, simply included in \xmlel{pre} elements.
 
 If a more compact rendering of listings is desired, for instance,
-because larger portions of source code is desired, listings'
-\texword{basicstyle} option should be used together with one of LaTeX
-standard size macros.  This could be in the argument of \texword{lstset}
-in the preamble for a global setting, or on a case-by-case basis as in
+because larger portions of source code are required in the document,
+listings' \texword{basicstyle} option should be used together with one
+of LaTeX standard size macros.  This could be in the argument of
+\texword{lstset} in the preamble for a global setting, or on a
+case-by-case basis as in
 
-\begin{verbatim}
-\begin{lstlisting}[language=tex,basicstyle=\footnotesize]
-Other sizes include \tiny, \scriptsize, \small, \normalsize, \large
-\end{lstlisting}
-\end{verbatim}
+\lstinputlisting[language=tex]{verbatimstyles.tex}
 
+As of version 0.5 of \ivoatex, only \texword{footnotesize} is actually
+formatted by the CSS embedded in the HTML document, and we believe
+listings should not be much smaller than that anyway.  As the options
+are translated into CSS classes, it is fairly easy to add further
+formatting functionality on a document-by-document basis, though.
 
 \subsection{References and Bibliography}
 
@@ -762,22 +764,14 @@ documents.
 
 The tth translator used by \ivoatex\ ignores \texword{usepackage}.  Many
 common packages are natively supported, but those that are not in
-general need specific handling.  For instance, the \texword{lstlisting}
-environment is not supported by tth, and hence in
+general need specific handling, and sometimes support is somewhat spotty.  
+For instance, the \texword{nolinkurl}
+macro is not supported natively by tth, and hence in
 \texttt{tthdefs.tex} there is
 \begin{lstlisting}[language=TeX]
-\newenvironment{lstlisting}[1][None]{%
-    \begin{html}<pre class="listing">\end{html}
-  }{%
-    \begin{html}</pre>\end{html}
-  }
-
-\newcommand{\lstinputlisting}[2][None]{
-  \verbatiminput{#2}
-}
+\newcommand{\nolinkurl}[1]{%
+	\special{html:<span class='nolinkurl'>}#1\special{html:</span>}}
 \end{lstlisting}
-to have some sensible behavior for the \ivoatex-supported constructs of
-the package.
 
 When a document requires special markup, it is likely that similarly
 different implementations will be necessary for PDF and HTML output.
