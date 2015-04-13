@@ -17,6 +17,14 @@
   \newcommand{\BibTeX}{BibTeX}
 \fi
 
+\iftth
+ \newcommand{\comicstuff}[1]{
+    \begin{html}<span class="comic">#1</span>\end{html}}
+\else
+  \newcommand{\comicstuff}[1]{(HTML exclusive material)}
+\fi
+\customcss{custom.css}
+
 \title{The \ivoatex\ Document Preparation System}
 
 \ivoagroup{Standards and Processes}
@@ -164,7 +172,7 @@ dependencies can easily be installed from cygwin's repository.
 On
 Debian-derived systems, the dependencies should be present after
 running a distribution-specific adaption of
-\begin{lstlisting}[language=sh]
+\begin{lstlisting}[language=sh,basicstyle=\footnotesize]
 apt-get install build-essential texlive-latex-extra zip xsltproc\
   texlive-bibtex-extra imagemagick ghostscript cm-super
 \end{lstlisting}
@@ -253,7 +261,7 @@ curl http://soft.g-vo.org/ivoatex/ivoatex-latest.tar.gz \
 While it is of course possible to keep \ivoatex\ in checkouts, too,
 the recommended and more elegant way is to use \texttt{svn:externals}.
 
-\begin{lstlisting}[language=sh]
+\begin{lstlisting}[language=sh,basicstyle=\footnotesize]
 export VOLUTEBASE="https://volute.googlecode.com/svn/trunk/projects"
 export WG=?????
 # this would be the Working Group name as represented in
@@ -458,7 +466,7 @@ a set of declarations like
 \begin{lstlisting}[language=TeX]
 \usepackage{listings}
 \lstloadlanguages{XML,sh}
-\lstset{flexiblecolumns=true,basicstyle=\small,tagstyle=\ttfamily}
+\lstset{flexiblecolumns=true,tagstyle=\ttfamily}
 \end{lstlisting}
 is included in the document preamble (i.e., before its
 \verb|\begin{document}|). The languages preloaded should be adapted to
@@ -773,7 +781,7 @@ macro is not supported natively by tth, and hence in
 	\special{html:<span class='nolinkurl'>}#1\special{html:</span>}}
 \end{lstlisting}
 
-When a document requires special markup, it is likely that similarly
+When a document requires special markup, it is likely that 
 different implementations will be necessary for PDF and HTML output.
 Using \texword{iftth} the implementations for the current output mode
 can be selected (without the \texword{newif} mentioned in the tth
@@ -794,6 +802,39 @@ has in its preamble the definitions
 \fi
 \end{lstlisting}
 
+
+\subsection{Custom CSS}
+
+If you find you need custom CSS to fix HTML formatting, you should
+probably talk to \ivoatex's authors first.  There are, however, 
+legitimate cases when something needs extra styling in HTML that simply
+somes out right in the PDF output.  In such cases, a standard CSS file can
+be added to a repository (it must then also be added to \texttt{SOURCES}
+in the Makefile in order for it to be delivered with the document
+package).
+
+The document itself would then use the \ivoatex's \texword{customcss}
+macro in its preamble with the CSS file name as an argument.  For
+example, the source for this document says
+
+\begin{lstlisting}
+\iftth
+ \newcommand{\comicstuff}[1]{
+    \begin{html}<span class="comic">#1</span>\end{html}}
+\else
+  \newcommand{\comicstuff}[1]{(HTML exclusive material)}
+\fi
+\end{lstlisting}
+
+\noindent in its preamble.  With this (and a CSS file that can be inspected in the
+distribution),
+
+\begin{lstlisting}
+\comicstuff{If this is comic sans, your webbrowser is permissive.}
+\end{lstlisting}
+
+\noindent becomes: 
+\comicstuff{If this is comic sans, your webbrowser is permissive.}
 
 \subsection{Migration from Ivoadoc}
 

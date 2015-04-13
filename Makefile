@@ -12,14 +12,16 @@ DOCDATE = 2015-01-29
 # What is it you're writing: NOTE, WD, PR, or REC
 DOCTYPE = NOTE
 
-# Source file for the TeX document (but the main file must always
+# Source files for the TeX document (but the main file must always
 # be called $(DOCNAME).tex
-SOURCES = $(DOCNAME).tex svnsubstitution.tex
+SOURCES = $(DOCNAME).tex svnsubstitution.tex verbatimstyles.tex
 
 # List of pixel image files to be included in submitted package 
 FIGURES = 
 
 # List of PDF figures (for vector graphics)
 VECTORFIGURES = 
+
+AUX_FILES=custom.css
 
 include ivoatex/Makefile
