@@ -569,8 +569,8 @@ such figures must be listed in the makefile's \texttt{VECTORFIGURES}
 variable.
 
 From \texttt{VECTORFIGURES}, \ivoatex\ arranges that, when a PDF figure 
-\texttt{foo.pdf} is used, the HTML target depends on called
-\texttt{foo.pdf.png}.  This PNG can be generated automatically by
+\texttt{foo.pdf} is used, the HTML target depends on a file called
+\texttt{foo.png}.  This PNG can be generated automatically by
 \ivoatex\ using a combination of ghostscript and ImageMagick.  It may
 sometimes be preferable to perform a custom conversion by hand (e.g.,
 more compact representation with bilevel source images), in which case
