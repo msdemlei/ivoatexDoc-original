@@ -3,7 +3,7 @@
 
 \usepackage{listings}
 \lstloadlanguages{sh,make,[latex]tex}
-\lstset{flexiblecolumns=true,numberstyle=\small,numbers=left,
+\lstset{flexiblecolumns=true,numberstyle=\small,showstringspaces=False,
   identifierstyle=\texttt,defaultdialect=[latex]tex,language=tex}
 
 \usepackage{todonotes}
@@ -467,7 +467,8 @@ a set of declarations like
 \begin{lstlisting}[language=TeX]
 \usepackage{listings}
 \lstloadlanguages{XML,sh}
-\lstset{flexiblecolumns=true,tagstyle=\ttfamily}
+\lstset{flexiblecolumns=true,tagstyle=\ttfamily,
+  showstringspaces=False}
 \end{lstlisting}
 is included in the document preamble (i.e., before its
 \verb|\begin{document}|). The languages preloaded should be adapted to
@@ -475,8 +476,9 @@ the document's needs.  Additional
 languages supported that are likely relevant in a VO context include C,
 fortran, python, SQL, and java, specified as above case-insensitively.
 
-The setup in the example (flexible columns, small size, tags in
-typewriter) is recommended for including XML source.
+The setup in the example (flexible columns, tags in
+typewriter, no explits blanks even in strings) 
+is recommended for including XML source.
 
 Actual listings are obtained with code like
 \begin{verbatim}
