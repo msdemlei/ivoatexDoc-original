@@ -91,7 +91,7 @@ quality.
 With these constraints in mind, several possible solutions were
 investigated.  Paul
 Harrison's ivoadoc
-system\footnote{\url{https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoadoc}} 
+system\footnote{\url{https://volute.g-vo.org/svn/trunk/projects/ivoapub/ivoadoc}} 
 went for XHTML as
 an input format and used XSLT2 and XML-FO as document processors.  While
 this facilitated several interesting features  -- for instance,
@@ -204,7 +204,7 @@ distribution.\footnote{See
 To see if the prerequisites are there and compatible with \ivoatex, try
 building an updated version of this document from its volute source:
 \begin{lstlisting}[language=sh]
-svn co https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc
+svn co https://volute.g-vo.org/svn/trunk/projects/ivoapub/ivoatexDoc
 cd ivoatexDoc
 make biblio   # update the bibliography
 make forcetex # make a PDF ignoring timestamps
@@ -242,7 +242,7 @@ length.
 While it is clearly preferable if authors use IVOA's 
 designated common version control
 system -- at this point, this is
-Volute\footnote{http://volute.googlecode.com} -- from the outset of
+Volute\footnote{http://volute.g-vo.org} -- from the outset of
 document development, it is possible to operate it locally as well.
 
 \subsubsection{Installation from Archive (without Volute)}
@@ -262,7 +262,7 @@ While it is of course possible to keep \ivoatex\ in checkouts, too,
 the recommended and more elegant way is to use \texttt{svn:externals}.
 
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
-export VOLUTEBASE="https://volute.googlecode.com/svn/trunk/projects"
+export VOLUTEBASE="https://volute.g-vo.org/svn/trunk/projects"
 export WG=?????
 # this would be the Working Group name as represented in
 # volute subdirectories: dal, dm, edu, grid, registry
@@ -407,9 +407,9 @@ this produces, this must be run after a document checkout.
 \subsection{Examples}
 
 Examples for \ivoatex\ use include this 
-document\footnote{https://volute.googlecode.com/svn/trunk/projects/ivoapub/ivoatexDoc}
+document\footnote{https://volute.g-vo.org/svn/trunk/projects/ivoapub/ivoatexDoc}
 or
-RegTAP\footnote{https://volute.googlecode.com/svn/trunk/projects/registry/regtap}.
+RegTAP\footnote{https://volute.g-vo.org/svn/trunk/projects/registry/regtap}.
 At the time of writing, about half a dozen IVOA documents within Volute
 are based on \ivoatex.
 
@@ -879,7 +879,10 @@ in the XSLT postprocessing.
 \appendix
 \section{Changes from Previous Versions}
 
-No previous versions yet.  
+\subsection{Changes from Version 1.0}
+\begin{enumerate}
+\item Changed google code URLs to volute.g-vo.org ones.
+\end{enumerate}
 % these would be subsections "Changes from v. WD-..."
 % Use itemize environments.
 
