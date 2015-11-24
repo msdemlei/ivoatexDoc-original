@@ -267,7 +267,7 @@ export WG=?????
 # this would be the Working Group name as represented in
 # volute subdirectories: dal, dm, edu, grid, registry
 svn import $DOCNAME $VOLUTEBASE/$WG/$DOCNAME
-rmdir $DOCNAME
+rm -r $DOCNAME
 svn co $VOLUTEBASE/$WG/$DOCNAME $DOCNAME
 cd $DOCNAME
 svn propset svn:externals\
@@ -391,6 +391,9 @@ for publication in the IVOA's document repository.   Obviously,
 Makefile should be updated as necessary before this target is built.
 The result is a zip file with a name compliant to the IVOA document
 standards \citep{std:docSTD}.
+\item \texttt{generate} is used to update machine-generated content in
+the document, typically by the main editor.  See
+section~\ref{sect:generated} for details.
 \end{itemize}
 
 \begin{admonition}{Note}
@@ -709,6 +712,72 @@ The authors gladly will support efforts to add support for other version
 control systems to \ivoatex.
 
 
+\subsection{Generated Content}
+\label{sect:generated}
+
+Sometimes it is desirable to have parts of a document generated through
+some sort of ivoatex-external process.  Examples include copying
+documentation from XML Schema files into the standard document (used,
+e.g., in TAPRegExt 1.1) or obtaining column metadata for standard
+data models from a live TAP\_SCHEMA (used, e.g., in RegTAP 1.0).
+
+For such cases, \ivoatex\ offers a python script
+\texttt{update\_generated.py}, which is executed by the
+\texttt{generate} make target.  It simply looks for structured comments
+in the main document and replaces what is between them with generated
+contents.  The opening line consists of a \TeX comment introducer, a
+blank, the literal \texttt{GENERATED:}, another blank, and a command
+line.  The closing line is a comment consisting of \texttt{/GENERATED}.
+
+On running \texttt{make generate}, the material between the opening and
+the closing line is replaced by the output of the command.
+
+For instance, in the following snippet the material between the comments
+was inserted by \texttt{make generate}:
+
+\begin{lstlisting}[language=TeX]
+% GENERATED: echo This is generated content
+This is generated content
+
+% /GENERATED
+\end{lstlisting}
+
+\texttt{make generate} will not replace any content in the document source
+if even just one command fails to execute as indicated by the
+command's return code; it is transactional in this sense.
+
+\ivoatex will never execute \texttt{update\_generated.py} as part of a
+dependency chain; it is intended that \texttt{make generate} must always
+been manually triggered.  On the one hand, this is because its
+dependencies cannot be generically modelled, given that arbitrary
+commands can be executed.  Document authors are also discouraged from
+providing such dependency information -- it is fairly common that
+content generation depends on the availability of external resources
+(e.g., databases or network services), and a document build should not
+fail just because these are unavailable.
+
+We mention in passing that generated content puts potentially executable
+material into documents, which is of course an attack vector for
+malicious software.  However, calling \texttt{make update} is no
+additional security risk, as presumably the author of the makefile is
+identical to the document author, and the makefile can already contain
+arbitrary commands that would be executed on the calling user's behalf.
+
+\subsubsection{Schema documentation}
+
+A common use case for this facility is building documentation from XML
+schema files.  To support it, \ivoatex\ comes with an XSLT file
+\texttt{schemadoc.xslt} that generates \TeX~source for one type, the
+name of which is passed in through a stylesheet parameter named
+\texttt{destType}.  Since \ivoatex\ itself depends on xsltproc, the
+recommended way to use the facility looks like this:
+
+\lstinputlisting[language=tex,basicstyle=\footnotesize]{schemainclusion.tex}
+
+Note that currently the entire command line must be in one physical line
+in the file, so the recommendation to keep source lines shorter than 72
+characters clearly does not apply here.
+
 \section{Customisation and Development}
 \label{sect:impl}
 
@@ -882,6 +951,8 @@ in the XSLT postprocessing.
 \subsection{Changes from Version 1.0}
 \begin{enumerate}
 \item Changed google code URLs to volute.g-vo.org ones.
+\item Documented new facilities for generating material, with extra
+focus on auto-documenting XML schema.
 \end{enumerate}
 % these would be subsections "Changes from v. WD-..."
 % Use itemize environments.
