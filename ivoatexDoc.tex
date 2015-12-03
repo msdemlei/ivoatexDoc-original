@@ -36,7 +36,8 @@
 
 \editor{Markus Demleitner}
 
-\previousversion{This is the first public release}
+\previousversion[http://www.ivoa.net/documents/ivoatexDoc/20150129][Version
+1.0]
        
 
 \begin{document}
@@ -708,9 +709,6 @@ alias svn='LC_ALL=C svn'
 
 and forget about the problem.
 
-The authors gladly will support efforts to add support for other version
-control systems to \ivoatex.
-
 
 \subsection{Generated Content}
 \label{sect:generated}
@@ -746,6 +744,18 @@ This is generated content
 if even just one command fails to execute as indicated by the
 command's return code; it is transactional in this sense.
 
+We mention in passing that in addition to allowing arbitrary shell
+commands, \texttt{update\_generated.py} has a facility that allows
+calling special python functions from within documents: Commands starting
+with an exclamation mark (``!'') are interpreted as such calls to
+functions defined within \texttt{update\_generated.py}.
+Currently, the only such builtin command extracts documentation from a
+live \texttt{TAP\_SCHEMA}\footnote{It is in use in the
+\href{https://volute.g-vo.org/svn/trunk/projects/registry/discovercollections}{Discovering
+Data Collections Within Services} IVOA Note.}.  For now, this should be
+considered an unstable experiment, but authors wanting to try inline
+python for content generation are welcome to do so.
+
 \ivoatex will never execute \texttt{update\_generated.py} as part of a
 dependency chain; it is intended that \texttt{make generate} must always
 been manually triggered.  On the one hand, this is because its
@@ -763,7 +773,7 @@ additional security risk, as presumably the author of the makefile is
 identical to the document author, and the makefile can already contain
 arbitrary commands that would be executed on the calling user's behalf.
 
-\subsubsection{Schema documentation}
+\subsubsection{XML Schema documentation}
 
 A common use case for this facility is building documentation from XML
 schema files.  To support it, \ivoatex\ comes with an XSLT file
@@ -777,6 +787,7 @@ recommended way to use the facility looks like this:
 Note that currently the entire command line must be in one physical line
 in the file, so the recommendation to keep source lines shorter than 72
 characters clearly does not apply here.
+
 
 \section{Customisation and Development}
 \label{sect:impl}
