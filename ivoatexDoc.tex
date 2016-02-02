@@ -514,11 +514,26 @@ formatting functionality on a document-by-document basis, though.
 
 \subsection{References and Bibliography}
 
+\subsubsection{Built-in Bibliographies}
 \ivoatex\ documents should use natbib and \BibTeX\ to manage references.
-The package comes with a default bibliography in
-\texttt{ivoatex/ivoabib.bib} containing records for many publications
-likely to be cited by IVOA documents.  An additional bibliograhy of
-IVOA documents present in the document repository will be added soon.
+The package comes with two default bibliographies:
+
+\begin{itemize}
+\item \texttt{ivoatex/ivoabib.bib} containing records for many publications
+likely to be cited by IVOA documents.  It also contains ``historical''
+records for IVOA standards, the \BibTeX\ tags of which start with
+\texttt{std:}.  Do not use these any more in new documents, they are
+only present in order to not break legacy documents.
+\item\texttt{ivoatex/docrepo.bib} containing records for IVOA documents
+listed in ADS.  At this writing, this concerns all recommendations.  A
+selection of Notes will be added at a later point.
+\end{itemize}
+
+Changes to the document that introduce new references or changes to the
+bibliography require that \texttt{make biblio} is run before changes
+become visible.
+
+\subsubsection{Citation Style}
 
 As usual in natbib, actual references are made through either writing
 \verb|\citep{tag}|, yielding a form like ``(Einstein 1905)'',
@@ -527,20 +542,72 @@ or \verb|\citet{tag}|, yielding a form like ``Einstein (1905)''.
 with optional arguments) yet; they will work in PDF output but fail in
 HTML.  Contributions to improve this are welcome.
 
+To reference an IVOA recommendation, locate its bibcode either using ADS
+or directly within \texttt{ivoatex/docrepo.bib} and then use one of the
+cite macros.  The preferred style is to introduce a short name for the
+standard once with a citation and then use that short name in the
+remainder of the document to have expressive texts not overciting. For
+instance,
 
-If a source does not already have a record in the bibliography that
-comes with \ivoatex, authors are welcome to contribute new records into
-its main repository.  Authors expecting that a reference really will not
-be reused in other documents can have a local bibliography as well.
-They will then need to amend the bibliography definition near the end of
-the source file to, for instance,
 \begin{lstlisting}[language=tex]
-\bibliography{ivoatex/ivoabib,local}
+IVOA Identifiers \citep{2007ivoa.spec.0314P} introduces URIs to
+reference Registry records, which are typically transmitted in
+VOResource \citep{2008ivoa.spec.0222P} format.  Both VOResource 
+and IVOA Identifiers are based on various W3C standards.
 \end{lstlisting}
-(assuming the local records are stored in \texttt{local.bib}).
 
-Changes that introduce new references or additions to the bibliography
-require that \texttt{make biblio} is run afterwards.
+will come out as
+
+\begin{quotation}
+IVOA Identifiers \citep{2007ivoa.spec.0314P} introduces URIs to
+reference Registry records, which are typically transmitted in
+VOResource \citep{2008ivoa.spec.0222P} format.  Both VOResource and IVOA
+Identifiers are based on W3C standards.
+\end{quotation}
+
+Recommendations should always be cited in the last version available
+at the time of writing\footnote{If a published recommendation is missing
+in the bibliography, this can be fixed by cd-ing into the ivoatex folder
+and saying \texttt{make docrepo.bib}.}.  If works in progress (working
+drafts, proposed recommendations are to be cited, authors should create
+a local bibliography (see below).
+
+If a non-temporary source (like a journal article or a software
+programme) does not already have a record in \texttt{ivoabib.bib},
+authors are welcome to contribute new records there.
+
+\subsubsection{Local Bibliographies}
+
+When a reference is really only relevant to a single document or is
+conceptually non-permanent -- this, in particular, pertains to Working
+Drafts or Proposed Recommendations to be cited -- should be kept in a
+local bibliography.  To enable such a document-local bibliography,
+the bibliography declaration at the foot of the document needs to be
+changed to
+
+\begin{lstlisting}[language=tex]
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo,localrefs}
+\end{lstlisting}
+
+Then a file \texttt{localrefs.bib} is created and checked into the
+version control repository.  An example \BibTeX\ record for an
+in-progress document is
+
+\begin{lstlisting}
+@Misc{wd:Datalink,
+  author={Patrick Dowler and Francois Bonnarel and 
+    Laurent Michel and Tom Donaldson and David Languignon},
+  editor={Patrick Dowler},
+  howpublished={{IVOA Working Draft 22 October 2013}},
+  title={DataLink},
+  year=2013,
+  url={http://ivoa.net/documents/DataLink/20131022/}
+}
+\end{lstlisting}
+
+Note that \emph{howpublished} contains the precise document date and the
+\emph{url} points to the actual versioned landing page, not the generic
+one for the standard.
 
 \subsection{Graphics}
 
@@ -861,7 +928,7 @@ macro is not supported natively by tth, and hence in
 \texttt{tthdefs.tex} there is
 \begin{lstlisting}[language=TeX]
 \newcommand{\nolinkurl}[1]{%
-	\special{html:<span class='nolinkurl'>}#1\special{html:</span>}}
+  \special{html:<span class='nolinkurl'>}#1\special{html:</span>}}
 \end{lstlisting}
 
 When a document requires special markup, it is likely that 
@@ -964,12 +1031,13 @@ in the XSLT postprocessing.
 \item Changed google code URLs to volute.g-vo.org ones.
 \item Documented new facilities for generating material, with extra
 focus on auto-documenting XML schema.
+\item Added advice on citing IVOA recommendations.
 \end{enumerate}
 % these would be subsections "Changes from v. WD-..."
 % Use itemize environments.
 
 
-\bibliography{ivoatex/ivoabib}
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo}
 
 
 \end{document}
