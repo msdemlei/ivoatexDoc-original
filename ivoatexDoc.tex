@@ -52,7 +52,8 @@ standards and notes.  \ivoatex\ supports the production of
 PDF and HTML renderings of the documents with sources in
 plain text suitable for version control, as is desirable for normative
 texts.  This note contains a user guide as well as a discussion of 
-\ivoatex's dependencies and its implementation.
+\ivoatex's dependencies and its implementation.  It refers to version
+1.0 of the software.
 \end{abstract}
 
 
@@ -83,7 +84,8 @@ manual intervention, is optional, often used incorrectly, and frequently
 lacks interoperability.  Led by these considerations, it was decided that
 \ivoatex\ would have to be based on plain text source files.
 
-As mandated by \citet{std:docSTD}, finished documents have to be at
+As mandated by the IVOA Document Standards \citep{std:docSTD}, 
+finished documents have to be at
 least available in PDF, while an additional HTML rendering for online
 use is recommended.  A document preparation system should thus be
 able  to produce documents in these formats in at least acceptable
@@ -145,7 +147,7 @@ compact program
 written in highly portable C generated through lex used to translate LaTeX
 to HTML.  As it is compact and portable, it is delivered with
 \ivoatex~and built on demand.
-As \ivoatex's tth may at times offer
+Since \ivoatex's tth may at times offer
 some enhancements over the upstream tth, using a system-installed tth is
 discouraged.
 
@@ -153,8 +155,9 @@ The remaining dependencies include:
 
 \begin{itemize}
 \item A \LaTeX\ distribution with some commonly available packages (calc,
-graphicx, xcolor, ifthen, doc, paralist, url, natbib, caption, hyperref,
-the agsm bibliography style).  It is recommended to install TeXLive.
+graphicx, xcolor, ifthen, doc, paralist, url, natbib, caption,
+hyperref).
+It is recommended to install TeXLive.
 \item A sufficiently capable implementation of \texttt{make}, with GNU's
 implementation recommended.
 \item The XSLT1 processor \texttt{xsltproc} (a different processor can
@@ -212,10 +215,11 @@ make forcetex # make a PDF ignoring timestamps
 make ivoatexDoc.html  # make an html document
 make package # make a zipfile for IVOA submission
 \end{lstlisting}
-Various diagnostics both from tth and from xsltproc (unknown commands,
+During HTML generation, various diagnostics both 
+from tth and from xsltproc (unknown commands,
 unexpected end tags, and the like) are
 expected at this point and no reason for alarm; we work on reducing the
-amount of spurious error messages during HTML generation.
+amount of spurious error messages.
 
 \subsection{Quick Start}
 
@@ -224,7 +228,7 @@ to be used from within a subdirectory of the directory containing the
 document sources (rather than being installed globally).  Given that
 it is fairly compact, having one copy per document seems acceptable.
 
-So, the first step to use ivoatex is to create a development
+So, the first step to use \ivoatex\ is to create a development
 directory:
 
 \begin{lstlisting}[language=sh]
@@ -263,6 +267,7 @@ While it is of course possible to keep \ivoatex\ in checkouts, too,
 the recommended and more elegant way is to use \texttt{svn:externals}.
 
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
+cd $DOCNAME
 export VOLUTEBASE="https://volute.g-vo.org/svn/trunk/projects"
 export WG=?????
 # this would be the Working Group name as represented in
@@ -295,35 +300,9 @@ cp ivoatex/archdiag.png .
 \end{lstlisting}
 
 The next step is to fill out the makefile template.  
-In \ivoatex\ version 0.4, this template looks like this:
+As of the formatting of this document, this template looks like this:
 
-\begin{lstlisting}[language=make,basicstyle=\footnotesize]
-# ivoatex Makefile.  The ivoatex/README for the targets available.
-
-# short name of your document (e.g., RegTAP)
-DOCNAME = ????
-
-# count up; you probably do not want to bother with versions <1.0
-DOCVERSION = 1.0
-
-# Publication date, ISO format; update manually for "releases"
-DOCDATE = ???
-
-# What is it you're writing: NOTE, WD, PR, or REC
-DOCTYPE = ???
-
-# Source files for the TeX document (but the main file must always
-# be called $(DOCNAME).tex
-SOURCES = $(DOCNAME).tex
-
-# List of pixel image files to be included in submitted package 
-FIGURES = archdiag.png
-
-# List of PDF figures (for vector graphics)
-VECTORFIGURES = 
-
-include ivoatex/Makefile
-\end{lstlisting}
+\lstinputlisting[language=make,basicstyle=\footnotesize]{ivoatex/Makefile.template}
 
 All lines with question marks must be filled out.  The document date
 is the publication date, which can be significantly different from the
@@ -341,6 +320,12 @@ in the document; files missing here will be missing from the package for
 distribution to the IVOA document repository, which will break the HTML
 rendering.  As to \texttt{VECTORFIGURES}, see
 sect.~\ref{sect:vectorgraphics}.
+
+\texttt{AUX\_FILES} is intended for files that should be included in the
+upload to the IVOA document repository while not taking part in the
+actual formatting.  This in particular concerns XML Schema files, for
+which the IVOA maintains a separate repository, but is by no means
+limited to them.
 
 The template for the \TeX\ source contains several lines with
 multiple question marks.  These must be filled out as well.
@@ -362,12 +347,13 @@ Coordination Group on request.  If no architecture diagram is present
 within a document, the reference to it from \texttt{FIGURES} in the
 makefile must be removed.
 
-\ivoatex requires the source to be written in UTF-8 encoding, since the
+\ivoatex\ requires the source to be written in UTF-8 encoding, since the
 references shipped with it are in UTF-8.
 Authors are urged to keep lines shorter than 72 characters in input
 files whenever possible in order to keep diffs useful and readable.
 When edits are made, paragraphs should not normally be reflowed to avoid
-large diffs for minor edits.
+large diffs for minor edits.  Authors desiring a reflow after many edits
+are encouraged to concentrate them in a separate, reflow-only commit.
 
 The PDF version of the document is built by the makefile's default rule,
 so running \texttt{make} will usually by enough.  This will produce a
@@ -383,8 +369,8 @@ or when a new publication is referenced from the document.
 asks to be rerun)
 \item \texttt{\$DOCNAME.html} generates an HTML rendering of the
 document; at this point, this will typically emit quite a bit of
-spurious diagnostics.  Unfortunately, real problems may hide within.  In
-the end, we currently recommend a visual inspection of the resulting
+spurious diagnostics.  Unfortunately, real problems may hide within.  
+Therefore, we currently recommend a visual inspection of the resulting
 HTML before submission.
 \item \texttt{package} generates a zip file containing everything needed
 for publication in the IVOA's document repository.   Obviously, 
@@ -436,7 +422,8 @@ to ease standards authoring.  These include:
 in sect.~\ref{sect:beginning}.
 \item[\texword{xmlel}] a macro for marking up XML element or attribute
 names and similar.  
-\item[\texword{vorent}] for a name taken from VOResource, usually an
+\item[\texword{vorent}] for a name taken from VOResource or its
+extensions, usually an
 element or attribute name.
 \item[\texword{admonition}] This is an environment for 
 displayed boxes, intended for notes, tips, and the like.  
@@ -506,7 +493,7 @@ case-by-case basis as in
 
 \lstinputlisting[language=tex]{verbatimstyles.tex}
 
-As of version 0.5 of \ivoatex, only \texword{footnotesize} is actually
+As of version 1.0 of \ivoatex, only \texword{footnotesize} is actually
 formatted by the CSS embedded in the HTML document, and we believe
 listings should not be much smaller than that anyway.  As the options
 are translated into CSS classes, it is fairly easy to add further
@@ -532,6 +519,12 @@ selection of Notes will be added at a later point.
 Changes to the document that introduce new references or changes to the
 bibliography require that \texttt{make biblio} is run before changes
 become visible.
+
+\ivoatex\ comes with a bibliography style of its own, derived from
+\texttt{agsm.bst}.  The custom bibliography style was derived to
+optimise some types of sources uncommon outside of the VO community, in
+particular IVOA recommendations and notes.  Users are welcome to improve
+\texttt{ivoatex/ivoa.bst}.
 
 \subsubsection{Citation Style}
 
@@ -698,7 +691,7 @@ standards, all of which can be retrieved from
 works properly on all of \ivoatex's target media.
 
 With non-HTTP URIs, it is recommended to use hyperref's
-\texword{nolinkurl} macro (rather than an unadorned \texword{textt} or
+\texword{nolinkurl} macro (rather than an unadorned \texword{texttt} or
 similar); advantages include that line breaking is better with
 nolinkurl, less manual escaping is necessary, and, if desired, 
 such URIs can be more easily styled.  An example:
@@ -782,9 +775,9 @@ and forget about the problem.
 
 Sometimes it is desirable to have parts of a document generated through
 some sort of ivoatex-external process.  Examples include copying
-documentation from XML Schema files into the standard document (used,
-e.g., in TAPRegExt 1.1) or obtaining column metadata for standard
-data models from a live TAP\_SCHEMA (used, e.g., in RegTAP 1.0).
+documentation from XML Schema files into the standard document 
+or obtaining column metadata for standard
+data models from a live TAP\_SCHEMA.
 
 For such cases, \ivoatex\ offers a python script
 \texttt{update\_generated.py}, which is executed by the
@@ -811,17 +804,56 @@ This is generated content
 if even just one command fails to execute as indicated by the
 command's return code; it is transactional in this sense.
 
-We mention in passing that in addition to allowing arbitrary shell
+In addition to allowing arbitrary shell
 commands, \texttt{update\_generated.py} has a facility that allows
-calling special python functions from within documents: Commands starting
-with an exclamation mark (``!'') are interpreted as such calls to
-functions defined within \texttt{update\_generated.py}.
-Currently, the only such builtin command extracts documentation from a
+calling special python functions from within documents: Commands
+starting with an exclamation mark (``!'') are translated to calls to
+appropriately named python functions defined within
+\texttt{update\_generated.py}.
+
+Currently, there are two such builtin commands; both are somewhat
+experimental features that may change when more experience has been
+gathered as to their usefulness.
+
+One command is \texttt{taptable}, which extracts documentation from a
 live \texttt{TAP\_SCHEMA}\footnote{It is in use in the
 \href{https://volute.g-vo.org/svn/trunk/projects/registry/discovercollections}{Discovering
-Data Collections Within Services} IVOA Note.}.  For now, this should be
-considered an unstable experiment, but authors wanting to try inline
-python for content generation are welcome to do so.
+Data Collections Within Services} IVOA Note.}.  The access URL of the
+live TAP service must be specified in an environment variable TAPURL in
+the Makefile, for instance
+
+\begin{lstlisting}[language=sh]
+export TAPURL=http://dc.g-vo.org/tap
+\end{lstlisting}
+
+Then, in the document one can use the structured comment
+
+\begin{lstlisting}[language=TeX]
+% GENERATED: !taptable tap_schema.tables
+% /GENERATED
+\end{lstlisting}
+
+After a \texttt{make generate}, the LaTeX source for a table describing
+the columns of \texttt{tap\_schema.tables} will be between the two
+comment lines; re-running \texttt{make generate} will replace that
+content with a refreshed version.
+
+The second command implemented is \texttt{schemadoc} that formats
+documentation for a type in an XML schema file.  This only works
+properly if the XML schema defines a \xmlel{vm:targetPrefix} element in
+the way pioneered by Ray Plante in
+VOResource.\footnote{See
+\url{http://volute.g-vo.org/svn/trunk/projects/registry/VOResource} for
+an example of a schema file instrumented for schemadoc.}
+With an appropriately instrumented schema, a document can say
+
+\begin{lstlisting}[language=TeX]
+% GENERATED: !schemadoc SchemaSource.xsd MyType
+% /GENERATED
+\end{lstlisting}
+
+to produce documentation for the schema type \xmlel{MyType} within
+the XML schema file \texttt{SchemaSource.xsd}.
 
 \ivoatex will never execute \texttt{update\_generated.py} as part of a
 dependency chain; it is intended that \texttt{make generate} must always
@@ -839,22 +871,6 @@ malicious software.  However, calling \texttt{make update} is no
 additional security risk, as presumably the author of the makefile is
 identical to the document author, and the makefile can already contain
 arbitrary commands that would be executed on the calling user's behalf.
-
-\subsubsection{XML Schema documentation}
-
-A common use case for this facility is building documentation from XML
-schema files.  To support it, \ivoatex\ comes with an XSLT file
-\texttt{schemadoc.xslt} that generates \TeX~source for one type, the
-name of which is passed in through a stylesheet parameter named
-\texttt{destType}.  Since \ivoatex\ itself depends on xsltproc, the
-recommended way to use the facility looks like this:
-
-\lstinputlisting[language=tex,basicstyle=\footnotesize]{schemainclusion.tex}
-
-Note that currently the entire command line must be in one physical line
-in the file, so the recommendation to keep source lines shorter than 72
-characters clearly does not apply here.
-
 
 \section{Customisation and Development}
 \label{sect:impl}
@@ -915,7 +931,7 @@ this note, as it mentions many words with a special meaning to \TeX, has
 \newcommand{\texword}[1]{\texttt{\color{texcolor} #1}}
 \end{lstlisting}
 Such macros will be included in \ivoatex\ itself rather than an
-individual document's preamble as they prove useful in multiple
+individual document's preamble when they prove useful in multiple
 documents.
 
 \subsection{Custom Macros and Environments}
@@ -925,7 +941,7 @@ common packages are natively supported, but those that are not in
 general need specific handling, and sometimes support is somewhat spotty.  
 For instance, the \texword{nolinkurl}
 macro is not supported natively by tth, and hence in
-\texttt{tthdefs.tex} there is
+\texttt{tthdefs.tex} there is code to the effect of
 \begin{lstlisting}[language=TeX]
 \newcommand{\nolinkurl}[1]{%
   \special{html:<span class='nolinkurl'>}#1\special{html:</span>}}
@@ -957,8 +973,9 @@ has in its preamble the definitions
 
 If you find you need custom CSS to fix HTML formatting, you should
 probably talk to \ivoatex's authors first.  There are, however, 
-legitimate cases when something needs extra styling in HTML that simply
-somes out right in the PDF output.  In such cases, a standard CSS file can
+legitimate cases when something needs extra styling in HTML that 
+comes out right without further effort
+in the PDF output.  In such cases, a custom CSS file can
 be added to a repository (it must then also be added to \texttt{SOURCES}
 in the Makefile in order for it to be delivered with the document
 package).
@@ -980,11 +997,11 @@ example, the source for this document says
 distribution),
 
 \begin{lstlisting}
-\comicstuff{If this is comic sans, your webbrowser is permissive.}
+\comicstuff{If this is comic sans, your web browser is permissive.}
 \end{lstlisting}
 
 \noindent becomes: 
-\comicstuff{If this is comic sans, your webbrowser is permissive.}
+\comicstuff{If this is comic sans, your web browser is permissive.}
 
 \subsection{Migration from Ivoadoc}
 
@@ -1001,14 +1018,6 @@ xsltproc ivoatex/fromivoadoc.xslt ivoadoc_source.html
 
 
 \section{Desirable Features to be Implemented}
-
-Frequently, certain parts of technical documents should be
-machine-ge\-ne\-ra\-ted.  Examples of such parts include the automatic
-extraction of XML schema snippets and their inclusion in the document
-as provided by ivoadoc, or the TAP\_SCHEMA-derived tables of column
-metadata in RegTAP.  As RegTAP shows, machine-generated content can
-already be used within \ivoatex, but it would certainly be preferable if
-some default framework for doing this were provided.
 
 The inclusion of IVOA architecture diagrams as bitmaps prepared by the
 TCG chair is unsatisfactory on both technical and organisational
@@ -1027,12 +1036,13 @@ in the XSLT postprocessing.
 \section{Changes from Previous Versions}
 
 \subsection{Changes from Version 1.0}
-\begin{enumerate}
+\begin{itemize}
 \item Changed google code URLs to volute.g-vo.org ones.
 \item Documented new facilities for generating material, with extra
 focus on auto-documenting XML schema.
 \item Added advice on citing IVOA recommendations.
-\end{enumerate}
+\item Re-targeting for \ivoatex 1.0 (rather than 0.4 before)
+\end{itemize}
 % these would be subsections "Changes from v. WD-..."
 % Use itemize environments.
 
