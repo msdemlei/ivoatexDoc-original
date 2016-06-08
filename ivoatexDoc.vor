@@ -1,0 +1,74 @@
+<!-- ivoatex/stdrec-template.xml filled out as an example.
+-->
+
+<ri:Resource 
+	xsi:type="vstd:Standard" 
+	created="2016-06-08T13:37:00" 
+	updated="2016-06-08T13:37:00"  
+	status="active"
+	xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+	xmlns:vstd="http://www.ivoa.net/xml/StandardsRegExt/v1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+	xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0
+		http://www.ivoa.net/xml/VOResource/v1.0
+	http://www.ivoa.net/xml/StandardsRegExt/v1.0
+		http://www.ivoa.net/xml/StandardsRegExt/v1.0
+	http://www.ivoa.net/xml/VOResource/v1.0
+		http://www.ivoa.net/xml/VOResource/v1.0">
+
+  <title>The ivoaTeX Document Preparation System</title>
+  <identifier>ivo://ivoa.net/std/ivoatexDoc</identifier> 
+  <curation>
+    <publisher>IVOA</publisher>
+
+    <creator>
+      <name>Demleitner, M.</name>
+    </creator>
+    <creator>
+      <name>Taylor, M.</name>
+    </creator>
+    <creator>
+      <name>Harrison, P.</name>
+    </creator>
+    <creator>
+      <name>Molinaro, M.</name>
+    </creator>
+
+		<!-- this should be the date of the last recommendation -->
+    <date role="update">2016-06-08</date>
+    <version>1.1</version> <!-- the document version -->
+    <contact>
+      <name>IVOA Committee on Standards and Processes</name>
+      <email>stdproc@ivoa.net</email>
+    </contact>
+  </curation>
+  <content>
+    <subject>Virtual observatory</subject>
+    <subject>Document authoring</subject>
+    <subject>Software</subject>
+
+    <description>
+			This note describes the ivoaTeX document preparation system for IVOA
+			standards and notes.  IvoaTeX supports the production of
+			PDF and HTML renderings of the documents with sources in
+			plain text suitable for version control, as is desirable for normative
+			texts.  This note contains a user guide as well as a discussion of 
+			IvoaTeX's dependencies and its implementation.  It refers to version
+			1.0 of the software.
+    </description>
+    <referenceURL>http://ivoa.net/documents/Notes/IVOATex</referenceURL>
+    <type>Other</type>
+  	<contentLevel>Research</contentLevel>
+  </content>
+
+  <endorsedVersion status="note">1.1</endorsedVersion>
+
+	<key>
+		<name>unused</name>
+		<description>Since ivoatex doesn't need a standard key so far,
+		but this little example should have one, we introduce this term.
+		</description>
+	</key>
+
+</ri:Resource>
