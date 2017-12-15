@@ -36,6 +36,8 @@
 
 \editor{Markus Demleitner}
 
+\previousversion[http://www.ivoa.net/documents/ivoatexDoc/20160430]{Version
+1.1}
 \previousversion[http://www.ivoa.net/documents/ivoatexDoc/20150129]{Version
 1.0}
        
@@ -295,7 +297,7 @@ templates which are part of the \ivoatex\ distribution:
 \begin{lstlisting}[language=sh]
 cp ivoatex/Makefile.template Makefile
 cp ivoatex/document.template $DOCNAME.tex
-cp ivoatex/archdiag.png .
+cp ivoatex/archdiag-full.xml archdiag.xml # Notes don't need that
 \end{lstlisting}
 
 The next step is to fill out the makefile template.  
@@ -338,13 +340,22 @@ repository.  Further automation for maintaining document history
 certainly is desirable, and the authors welcome ideas for how this might
 look.
 
-The architecture diagram specimen \texttt{archdiag.png} is only
-necessary for documents on the recommendation track (i.e., notes in
-general do not have one).  Architecture diagrams adapted to the concrete
-document are currently prepared by the chair of the Technical
-Coordination Group on request.  If no architecture diagram is present
-within a document, the reference to it from \texttt{FIGURES} in the
-makefile must be removed.
+An architecture diagram is only 
+necessary for documents on the recommendation track.  Notes may have
+one, but since they themselves are not included on it, that is rather
+unusual.  If you do not want to include an architecture diagram, remove
+\texttt{archdiag.svg} from \texttt{FIGURES}.
+
+To prepare an architecture diagram, copy
+\texttt{ivoatex/archdiag-full.xml} to \texttt{archdiag.xml}.  Then edit
+\texttt{archdiag.xml} and remove all references to standards unrelated
+to the current document.  As a rule, all \texttt{rec} elements for
+standards not mentioned in
+``Role within the IVOA Architecture'' should be removed.  The
+architecture diagram will be built by saying \texttt{make archdiag.pdf}.
+As long as the tooling situation regarding \LaTeX and SVG is as
+unsatisfactory as it is, please commit both \texttt{archdiag.svg} and
+\texttt{archdiag.pdf} to the version control system.
 
 \ivoatex\ requires the source to be written in UTF-8 encoding, since the
 references shipped with it are in UTF-8.
@@ -610,7 +621,7 @@ In practice, authors are encouraged to restrict themselves to JPEG, PNG,
 and possibly GIF.  Currently, identical images are used for both PDF and
 HTML renderings.  The recommended pattern for figures is
 \begin{lstlisting}[language=tex]
-\begin{figure}[thm]
+\begin{figure}[th]
 \begin{center}
 \includegraphics[width=0.9\textwidth]{mydiagram.png}
 \end{center}
@@ -649,7 +660,7 @@ dependencies of the document.
 In tables, rules should be used sparingly.  The standard pattern for tables is
 something like
 \begin{lstlisting}
-\begin{table}[thm]
+\begin{table}[th]
 \begin{tabular}{p{0.35\textwidth}p{0.64\textwidth}}
 \sptablerule
 \textbf{Column Head}&\textbf{Another column head}\\
@@ -1015,13 +1026,58 @@ sources, the stylesheet is used like this:
 xsltproc ivoatex/fromivoadoc.xslt ivoadoc_source.html
 \end{lstlisting}
 
+\subsection{Maintenance of the Architecture Diagram}
+
+The IVOA architecture diagram is introduced in \citet{note:VOARCH} to
+visualise the standards landscape.  All IVOA recommendations should have
+an architecture diagram showing the current standard as well as the
+related standards within that landscape.
+
+Within \ivoatex, architecture diagrams are produced in Scalable Vector
+Graphics (SVG).  The source is in \texttt{ivoatex/archdiag-full.xml},
+specifying the location of the recommendations (in \xmlel{rec} elements)
+and the documents on the recommendation track (in \xmlel{prerec}
+elements).  The figure has a design size of $800\times 600$ ``pixels''.
+Note that SVG is not really pixel-based -- the numbers are just
+convenient, unitless floating point numbers, and the conversion of these
+coordinates to physical ones is done at render time.
+
+In the diagram, the standards shoud be limited to the inner box, i.e.,
+the zone between 50, 100 and 750, 500.  Standards boxes are $90\times
+18$ pixels large, which is set in the \texttt{format-standard} template
+in \texttt{make-archdiag.xslt}.  When standard boxes are aligned, the
+vertical distance of their centers should be 25 pixels, the horizontal
+distance 100 pixels.  To keep the diagram lively, standards not
+obviously grouped with others may be placed ``off-grid''.
+
+The specifications in \texttt{archdiag-full.xml}, as well as those in
+the authors' \texttt{archdiag.xml}, are ad-hoc XML interpreted by the
+stylesheet \texttt{ivoatex/make-archdiag.xml}.  That stylesheet is
+written such that all three levels of the architecture diagram can be
+created.  The \texttt{Makefile} in \texttt{ivoatex} has the necessary
+rules, but in contrast to the author rules, they are expected to be
+executed \emph{within} the ivoatex directory.
+
+So, to create the full versions of the three levels of the architecture
+diagram, do something like
+
+\begin{lstlisting}[language=sh]
+cd ivoatex
+make archdiag-l0.svg
+make archdiag-l1.svg
+make archdiag-l2.svg
+\end{lstlisting}
+
+The resulting svg files can be viewed in common browsers or in vector
+graphics programs like inkscape.  The latter can also be used to find
+good positions for new elements (cursor coordinates are shown in the
+footline, but the direction of the y axis is reversed versus the SVG
+coordinates).  Please do not use graphical tools to edit the diagram
+itself -- the goal of the current architecture is to make edits
+transparent and have a clear and simple specification of the standards
+themselves in a file producing meaningful diffs.
 
 \section{Desirable Features to be Implemented}
-
-The inclusion of IVOA architecture diagrams as bitmaps prepared by the
-TCG chair is unsatisfactory on both technical and organisational
-grounds.  A common system allowing their easy generation based on SVG or
-one of the \TeX-based graphics engines should be written.
 
 A major drawback of \ivoatex's HTML output is that paragraphs are not actually
 marked up as such.  Due to the \TeX\ processing model, their
@@ -1030,9 +1086,19 @@ source-level paragraphs are rendered as text nodes separated by empty
 HTML paragraph elements.  It would probably be possible to rectify this
 in the XSLT postprocessing.
 
+An automated way to maintain the in-document history (i.e., the sequence
+of \verb|\previousversions| in the preamble) and better support to
+generate the change log would be desirable.
 
 \appendix
 \section{Changes from Previous Versions}
+
+\subsection{Changes from Version 1.1}
+
+\begin{itemize}
+\item Added material on the SVG architecture diagram, removed references
+to old PNG-based workflow.
+\end{itemize}
 
 \subsection{Changes from Version 1.0}
 \begin{itemize}
