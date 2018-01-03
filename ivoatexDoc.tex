@@ -223,7 +223,7 @@ unexpected end tags, and the like) are
 expected at this point and no reason for alarm; we work on reducing the
 amount of spurious error messages.
 
-\subsection{Quick Start}
+\subsection{Basic \ivoatex~operation}
 
 For ease of installation and robustness, \ivoatex\ for now is designed
 to be used from within a subdirectory of the directory containing the
@@ -291,6 +291,8 @@ itself.
 \subsubsection{Beginning the document}
 \label{sect:beginning}
 
+\paragraph{Main metadata in the Makefile}
+
 For convenience, the document production should start from some common
 templates which are part of the \ivoatex\ distribution:
 
@@ -328,6 +330,8 @@ actual formatting.  This in particular concerns XML Schema files, for
 which the IVOA maintains a separate repository, but is by no means
 limited to them.
 
+\paragraph{Additional metadata in the \LaTeX~source}
+
 The template for the \TeX\ source contains several lines with
 multiple question marks.  These must be filled out as well.
 
@@ -340,6 +344,8 @@ repository.  Further automation for maintaining document history
 certainly is desirable, and the authors welcome ideas for how this might
 look.
 
+\paragraph{The Archtecture Diagram}
+
 An architecture diagram is only 
 necessary for documents on the recommendation track.  Notes may have
 one, but since they themselves are not included on it, that is rather
@@ -351,11 +357,26 @@ To prepare an architecture diagram, copy
 \texttt{archdiag.xml} and remove all references to standards unrelated
 to the current document.  As a rule, all \texttt{rec} elements for
 standards not mentioned in
-``Role within the IVOA Architecture'' should be removed.  The
+``Role within the IVOA Architecture'' should be removed.  Finally, use a
+\xmlel{thisrec} element for the current standard.  An architecture
+diagram for VOResource would thus be specified like this:
+
+\begin{lstlisting}[language=XML,basicstyle=\footnotesize]
+<archdiag xmlns="http://ivoa.net/archdiag">
+  <thisrec name="VOResource" x="55" y="155"/>
+  <rec name="RegTAP" x="55" y="180"/>
+  <rec name="RegistryInterface" x="55" y="205"/>
+  <!-- and a few more -->
+</archdiag>
+\end{lstlisting}
+
+The
 architecture diagram will be built by saying \texttt{make archdiag.pdf}.
 As long as the tooling situation regarding \LaTeX and SVG is as
 unsatisfactory as it is, please commit both \texttt{archdiag.svg} and
 \texttt{archdiag.pdf} to the version control system.
+
+\paragraph{Source code conventions}
 
 \ivoatex\ requires the source to be written in UTF-8 encoding, since the
 references shipped with it are in UTF-8.
@@ -364,6 +385,8 @@ files whenever possible in order to keep diffs useful and readable.
 When edits are made, paragraphs should not normally be reflowed to avoid
 large diffs for minor edits.  Authors desiring a reflow after many edits
 are encouraged to concentrate them in a separate, reflow-only commit.
+
+\paragraph{Makefile targets}
 
 The PDF version of the document is built by the makefile's default rule,
 so running \texttt{make} will usually by enough.  This will produce a
@@ -1089,6 +1112,9 @@ in the XSLT postprocessing.
 An automated way to maintain the in-document history (i.e., the sequence
 of \verb|\previousversions| in the preamble) and better support to
 generate the change log would be desirable.
+
+The hardcoded and part-manual way to run \LaTeX and Bib\TeX should be
+made smarter, perhaps along the lines of latex-make.
 
 \appendix
 \section{Changes from Previous Versions}
