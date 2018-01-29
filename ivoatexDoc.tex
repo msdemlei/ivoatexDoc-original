@@ -169,7 +169,8 @@ central makefile should probably be amended to allow easier changes
 here).
 \item The \texttt{zip} archiver for package generation.
 \item \texttt{imageMagick} and \texttt{ghostscript} if vector graphics
-is to be processed.
+is to be processed (which includes the architecture diagram).
+\item \texttt{librsvg2-bin} to let imageMagick process SVG.
 \end{itemize}
 
 On Windows, it is recommended to run \ivoatex\ within cygwin, where all
@@ -180,7 +181,7 @@ Debian-derived systems, the dependencies should be present after
 running a distribution-specific adaption of
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
 apt-get install build-essential texlive-latex-extra zip xsltproc\
-  texlive-bibtex-extra imagemagick ghostscript cm-super
+  texlive-bibtex-extra imagemagick ghostscript cm-super librsvg2-bin
 \end{lstlisting}
 (cm-super contains vector versions of computer modern fonts in T1
 encoding), on RPM-based systems something like
@@ -350,11 +351,12 @@ An architecture diagram is only
 necessary for documents on the recommendation track.  Notes may have
 one, but since they themselves are not included on it, that is rather
 unusual.  If you do not want to include an architecture diagram, remove
-\texttt{archdiag.svg} from \texttt{FIGURES}.
+\texttt{role\_diagram.svg} from \texttt{FIGURES} and
+\texttt{role\_diagram.pdf} from \texttt{SOURCES} in the makefile.
 
 To prepare an architecture diagram, copy
-\texttt{ivoatex/archdiag-full.xml} to \texttt{archdiag.xml}.  Then edit
-\texttt{archdiag.xml} and remove all references to standards unrelated
+\texttt{ivoatex/archdiag-full.xml} to \texttt{role\_diagram.xml}.  Then edit
+\texttt{role\_diagram.xml} and remove all references to standards unrelated
 to the current document.  As a rule, all \texttt{rec} elements for
 standards not mentioned in
 ``Role within the IVOA Architecture'' should be removed.  Finally, use a
@@ -370,8 +372,15 @@ diagram for VOResource would thus be specified like this:
 </archdiag>
 \end{lstlisting}
 
-The
-architecture diagram will be built by saying \texttt{make archdiag.pdf}.
+The standard-specific
+architecture diagram will be built by saying \texttt{make
+role\_diagram.svg} and can be viewed using, for instance, common web
+browsers.  Please refrain from editing the SVG with vector graphics
+programs.  In the PDF diagrams, a PDF version of the diagram is
+required.  This is built using \texttt{make role\_diagram.pdf}, and a
+stand-in will be built if your system lacks the software to do this
+conversion.  It should be fine to use common vector graphic tools like
+inkscape to perform the conversion in that case.
 As long as the tooling situation regarding \LaTeX and SVG is as
 unsatisfactory as it is, please commit both \texttt{archdiag.svg} and
 \texttt{archdiag.pdf} to the version control system.
