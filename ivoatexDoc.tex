@@ -381,7 +381,7 @@ required.  This is built using \texttt{make role\_diagram.pdf}, and a
 stand-in will be built if your system lacks the software to do this
 conversion.  It should be fine to use common vector graphic tools like
 inkscape to perform the conversion in that case.
-As long as the tooling situation regarding \LaTeX and SVG is as
+As long as the tooling situation regarding \LaTeX~and SVG is as
 unsatisfactory as it is, please commit both \texttt{archdiag.svg} and
 \texttt{archdiag.pdf} to the version control system.
 
@@ -913,6 +913,48 @@ malicious software.  However, calling \texttt{make update} is no
 additional security risk, as presumably the author of the makefile is
 identical to the document author, and the makefile can already contain
 arbitrary commands that would be executed on the calling user's behalf.
+
+\subsection{The Standards Record}
+
+IVOA recommendations and endorsed notes must be registered using the
+schema from StandardsRegExt \citep{2012ivoa.spec.0508H}.  A major use
+case for this is to allow references to standards from other registry
+records. The prototypcial example for this is the \xmlel{standardID}
+attribute of VOResource \xmlel{capability} elements that contains
+identifiers (and possibly standard keys as fragment identifiers)
+declaring ``this service works as specificed by that standard''.
+
+Registration of IVOA-approved standards happens through the registry of
+registries (RofR, authority ivoa.net).  The preparation of the registry
+records, however, is up to the document editor.  It is strongly
+recommended to keep and maintain the registry record in version control
+alongside with the document source.
+
+To do that, create a standards record from ivoatex's template (assuming
+operation within an svn checkout):
+
+\begin{lstlisting}[language=sh]
+$ svn copy ivoatex/stdrec-template.xml stdrec.xml
+\end{lstlisting}
+
+In the resulting file, the items one has to change are marked with four
+hash marks; the elements \xmlel{schema} and \xmlel{key} can be removed
+or repeated as required by a particular standard, all other elements
+present should be given at least once.  Please remove the explanatory
+comments as you go. 
+
+A sample record filled out for this document is kept in the subversion
+repository (but not uploaded into the Registry, as Notes do not usually
+require registration).
+
+Most of the metadata to be filled in actually already is available in
+structured form in \ivoatex.  Contributions that help automating
+creation and maintenance of stdrec.xml exploiting this are welcome.
+
+With the upload of a proposed recommendation to the document repository,
+the editor should send the standards record to the registry of
+registries by e-mail\footnote{See \url{http://rofr.ivoa.net/} for
+contact information.} and then re-submit the record with each upload.
 
 \section{Customisation and Development}
 \label{sect:impl}

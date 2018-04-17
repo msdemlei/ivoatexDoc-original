@@ -1,0 +1,66 @@
+<!-- This standards record is intended as an example for ivoatex.
+It has *not* been uploaded into the RofR and should not be, as ivoatexDoc
+is just a Note and we don't want to clutter the registry. -->
+
+<ri:Resource 
+	xsi:type="vstd:Standard" 
+	created="2018-04-17T08:58:00Z" 
+	updated="2018-04-17T08:58:00Z" 
+	status="active"
+	xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+	xmlns:vstd="http://www.ivoa.net/xml/StandardsRegExt/v1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+	xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0
+		http://www.ivoa.net/xml/VOResource/v1.0
+	http://www.ivoa.net/xml/StandardsRegExt/v1.0
+		http://www.ivoa.net/xml/StandardsRegExt/v1.0
+	http://www.ivoa.net/xml/VOResource/v1.0
+		http://www.ivoa.net/xml/VOResource/v1.0">
+
+  <title>The ivoaTeX Document Preparation System</title>
+  <shortName>ivoatexDoc</shortName>
+  <identifier>ivo://ivoa.net/std/ivoatexDocidentifier> 
+  <curation>
+    <publisher>IVOA</publisher>
+
+    <creator>
+      <name>Demleitner, M.</name>
+    </creator>
+    <creator>
+      <name>Taylor, M.</name>
+    </creator>
+    <creator>
+      <name>Harrison, P.</name>
+    </creator>
+    <creator>
+      <name>Molinaro, M.</name>
+    </creator>
+
+    <date role="update">2016-04-30</date>
+    <version>1.1</version>
+    <contact>
+      <name>IVOA Committee on Standards and Processes</name>
+      <email>stdproc@ivoa.net</email>
+    </contact>
+  </curation>
+  <content>
+    <subject>Virtual observatory</subject>
+    <subject>Pubication tools</subject>
+
+    <description>
+    	This note describes the IVOATeX document preparation system for IVOA
+    	standards and notes. IVOATeX supports the production of PDF and HTML
+    	renderings of the documents with sources in plain text suitable for
+    	version control, as is desirable for normative texts. This note contains
+    	a user guide as well as a discussion of IVOATeX's dependencies and its
+    	implementation. It refers to version 1.0 of the software.
+    </description>
+    <referenceURL
+    	>http://ivoa.net/documents/notes/ivoatex/index.html</referenceURL>
+    <type>Other</type>
+  	<contentLevel>Research</contentLevel>
+  </content>
+
+  <endorsedVersion status="note">1.1</endorsedVersion>
+</ri:Resource>
