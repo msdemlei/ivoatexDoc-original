@@ -345,6 +345,31 @@ repository.  Further automation for maintaining document history
 certainly is desirable, and the authors welcome ideas for how this might
 look.
 
+\texword{ivoagroup} should contain the name of the (one) IVOA working or
+interest group under which auspices the document development mainly
+happens.  Pick one from the following list\footnote{We actually do not
+enforce the use of a controlled vocabulary here; automatic submission
+with \texttt{make upload} will fail if you invent something here,
+though.}:
+
+\begin{compactitem}
+\item Applications
+\item DAL
+\item Data Access Layer
+\item Data Models
+\item Grid and Web Services
+\item Registry
+\item Data Curation and Preservation
+\item Standards and Processes
+\item Semantics
+\item Theory
+\item VO Event
+\item Time Domain
+\item Education
+\item No Group (only possible for Notes)
+\end{compactitem}
+
+
 \paragraph{The Archtecture Diagram}
 
 An architecture diagram is only 
@@ -460,7 +485,7 @@ evolution of \ivoatex\ itself.
 to ease standards authoring.  These include:
 
 \begin{bigdescription}
-\item[\texword{author}, \texword{previousversion}] these are discussed
+\item[\texword{author}, \texword{previousversion}, \texword{ivoagroup}] these are discussed
 in sect.~\ref{sect:beginning}.
 \item[\texword{xmlel}] a macro for marking up XML element or attribute
 names and similar.  
