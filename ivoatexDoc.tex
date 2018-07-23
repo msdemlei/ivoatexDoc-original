@@ -407,8 +407,8 @@ stand-in will be built if your system lacks the software to do this
 conversion.  It should be fine to use common vector graphic tools like
 inkscape to perform the conversion in that case.
 As long as the tooling situation regarding \LaTeX~and SVG is as
-unsatisfactory as it is, please commit both \texttt{role_diagram.svg} and
-\texttt{role_diagram.pdf} to the version control system.
+unsatisfactory as it is, please commit both \texttt{role\_diagram.svg} and
+\texttt{role\_diagram.pdf} to the version control system.
 
 \paragraph{Source code conventions}
 
@@ -506,6 +506,9 @@ Also, they are floating insertions.
 lists in the style of HTML \xmlel{dl}, and it will be translated into
 one.  Use \verb|\item[term]| for the term to be defined
 (the construct this item is in is a \texword{bigdescription}).
+\item[\texword{auxilaryurl}] A macro expanding a URL relative to the
+current document to a full URL.  This is discussed more extensively in
+sect.~\ref{sect:links}
 \end{bigdescription}
 
 The intention behind macros like \texword{xmlel} and \texword{vorent} is
@@ -738,6 +741,7 @@ primarily to delimit the table itself as well as the the heading and the
 body.
 
 \subsection{Hyperlinks}
+\label{sect:links}
 
 While \ivoatex\ puts no restrictions on the usage of hyperref features,
 the preferred way to include links in \ivoatex\ documents is to use the
@@ -767,6 +771,24 @@ such URIs can be more easily styled.  An example:
 The value of the \xmlel{standardID} attribute will be
 be \nolinkurl{ivo://ivoa.net/std/Registry#OAI-2.0}.
 \end{lstlisting}
+
+A special feature related to links is the \texword{auxiliaryurl} macro.
+It is used when a document references a resource coming with the
+document and versioned with it, but not included with the document text.
+Examples for such material could be helper scripts, simple validators,
+larger bits of sample data, and the like.  Note that vocabularies and
+XML schema files should not be distributed in this way, as they have
+conventional places within the ivoa.net URL hierarchy.
+
+For instance, \verb|\auxiliaryurl{custom.css}| expands to
+$$\hbox{\auxiliaryurl{custom.css},}$$ which is, for each release of this
+document, the URL the example custom CSS file mentioned in the example
+in sect.~\ref{sect:customcss} is found at.  The preferred way to include
+such (long) URLs is in footnotes, as they typcially cannot be hyphenated.
+
+In order to make \ivoatex~include the file linked to in this way in the
+package submitted to the document repository, you must add the argument
+of \texword{auxiliaryurl} to \verb|AUX_FILES| in the Makefile.
 
 \subsection{Editorial tools}
 
@@ -1079,6 +1101,7 @@ has in its preamble the definitions
 
 
 \subsection{Custom CSS}
+\label{sect:customcss}
 
 If you find you need custom CSS to fix HTML formatting, you should
 probably talk to \ivoatex's authors first.  There are, however, 
@@ -1150,7 +1173,7 @@ distance 100 pixels.  To keep the diagram lively, standards not
 obviously grouped with others may be placed ``off-grid''.
 
 The specifications in \texttt{archdiag-full.xml}, as well as those in
-the authors' \texttt{role_diagram.xml}, are ad-hoc XML interpreted by the
+the authors' \texttt{role\_diagram.xml}, are ad-hoc XML interpreted by the
 stylesheet \texttt{ivoatex/make-archdiag.xml}.  That stylesheet is
 written such that all three levels of the architecture diagram can be
 created.  The \texttt{Makefile} in \texttt{ivoatex} has the necessary
