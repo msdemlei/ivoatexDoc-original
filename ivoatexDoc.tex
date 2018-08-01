@@ -517,6 +517,10 @@ one.  Use \verb|\item[term]| for the term to be defined
 \item[\texword{auxilaryurl}] A macro expanding a URL relative to the
 current document to a full URL.  This is discussed more extensively in
 sect.~\ref{sect:links}
+\item[\texword{inlinetable}] This is an environment for showing tables
+in-place (rather than as an insertion potentially somewhere else, as
+LaTeX's table environment does).  This may lead to rather empty pages
+when the tables get longer.
 \end{bigdescription}
 
 The intention behind macros like \texword{xmlel} and \texword{vorent} is
@@ -1135,10 +1139,10 @@ Using \texword{iftth} the implementations for the current output mode
 can be selected (without the \texword{newif} mentioned in the tth
 documentation, as that is already performed in \texttt{tthdefs.tex}).
 
-For instance, RegTAP has many inline tables that need special spacing
+For instance, RegTAP 1.0 had many inline tables that need special spacing
 the PDF rendering, whereas normal tables will do for them
 in HTML.  It therefore
-has in its preamble the definitions
+had in its preamble the definitions
 \begin{lstlisting}
 \iftth
   \newenvironment{inlinetable}{}{}
@@ -1150,6 +1154,8 @@ has in its preamble the definitions
 \fi
 \end{lstlisting}
 
+(this mechanism proved useful for other specifications, too, and so
+it is part of \ivoatex~proper now).
 
 \subsection{Custom CSS}
 \label{sect:customcss}
@@ -1263,7 +1269,7 @@ An automated way to maintain the in-document history (i.e., the sequence
 of \verb|\previousversions| in the preamble) and better support to
 generate the change log would be desirable.
 
-The hardcoded and part-manual way to run \LaTeX and Bib\TeX should be
+The hardcoded and part-manual way to run \LaTeX and \BibTeX~should be
 made smarter, perhaps along the lines of latex-make.
 
 \appendix
@@ -1274,6 +1280,10 @@ made smarter, perhaps along the lines of latex-make.
 \begin{itemize}
 \item Added material on the SVG architecture diagram, removed references
 to old PNG-based workflow.
+\item Added an upload checklist (and, relatedly, listing legal WG names).
+\item Added documentation on auxiliaryurl.
+\item Added instructions on making standards records.
+\item Documented triple-bibliography maintenance.
 \end{itemize}
 
 \subsection{Changes from Version 1.0}
@@ -1284,8 +1294,6 @@ focus on auto-documenting XML schema.
 \item Added advice on citing IVOA recommendations.
 \item Re-targeting for \ivoatex 1.0 (rather than 0.4 before)
 \end{itemize}
-% these would be subsections "Changes from v. WD-..."
-% Use itemize environments.
 
 
 \bibliography{ivoatex/ivoabib,ivoatex/docrepo}
