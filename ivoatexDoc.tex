@@ -55,7 +55,7 @@ PDF and HTML renderings of the documents with sources in
 plain text suitable for version control, as is desirable for normative
 texts.  This note contains a user guide as well as a discussion of 
 \ivoatex's dependencies and its implementation.  It refers to version
-1.0 of the software.
+1.2 of the software.
 \end{abstract}
 
 
@@ -170,7 +170,7 @@ here).
 \item The \texttt{zip} archiver for package generation.
 \item \texttt{imageMagick} and \texttt{ghostscript} if vector graphics
 is to be processed (which includes the architecture diagram).
-\item \texttt{librsvg2-bin} to let imageMagick process SVG.
+\item \texttt{librsvg2} to let imageMagick process SVG.
 \end{itemize}
 
 On Windows, it is recommended to run \ivoatex\ within cygwin, where all
@@ -343,11 +343,11 @@ page in the IVOA wiki, for \texword{previousversion}, it should point to
 the landing page of the respective document version in the IVOA document
 repository.  Further automation for maintaining document history
 certainly is desirable, and the authors welcome ideas for how this might
-look.
+look like.
 
 \texword{ivoagroup} should contain the name of the (one) IVOA working or
 interest group under which auspices the document development mainly
-happens.  Pick one from the following list\footnote{We actually do not
+happens.  Pick one from the following list\footnote{We do not
 enforce the use of a controlled vocabulary here; automatic submission
 with \texttt{make upload} will fail if you invent something here,
 though.}:
@@ -374,7 +374,7 @@ though.}:
 
 An architecture diagram is only 
 necessary for documents on the recommendation track.  Notes may have
-one, but since they themselves are not included on it, that is rather
+one, but since Notes are not shown on it, that is rather
 unusual.  If you do not want to include an architecture diagram, remove
 \texttt{role\_diagram.svg} from \texttt{FIGURES} and
 \texttt{role\_diagram.pdf} from \texttt{SOURCES} in the makefile.
@@ -401,7 +401,8 @@ The standard-specific
 architecture diagram will be built by saying \texttt{make
 role\_diagram.svg} and can be viewed using, for instance, common web
 browsers.  Please refrain from editing the SVG with vector graphics
-programs.  In the PDF diagrams, a PDF version of the diagram is
+programs.  In the PDF renderings of the document, 
+a PDF version of the architecture diagram is
 required.  This is built using \texttt{make role\_diagram.pdf}, and a
 stand-in will be built if your system lacks the software to do this
 conversion.  It should be fine to use common vector graphic tools like
@@ -445,6 +446,13 @@ for publication in the IVOA's document repository.   Obviously,
 Makefile should be updated as necessary before this target is built.
 The result is a zip file with a name compliant to the IVOA document
 standards \citep{std:docSTD}.
+\item \texttt{arxiv-upload}  produces a file arxiv-upload.tar.gz for
+the current document.  ArXiv uploads are automatically done by the
+document coordinator for RECs and ENs, and editors \emph{should not} do
+them themselves.  Authors of Notes may upload their documents to arXiv.
+\item \texttt{upload} produces a package, shows metadata to be uploaded to the
+IVOA document repository (make sure everything is as you expect it) and
+then uploads the package.
 \item \texttt{generate} is used to update machine-generated content in
 the document, typically by the main editor.  See
 section~\ref{sect:generated} for details.
@@ -467,8 +475,8 @@ Examples for \ivoatex\ use include this
 document\footnote{https://volute.g-vo.org/svn/trunk/projects/ivoapub/ivoatexDoc}
 or
 RegTAP\footnote{https://volute.g-vo.org/svn/trunk/projects/registry/regtap}.
-At the time of writing, about half a dozen IVOA documents within Volute
-are based on \ivoatex.
+At the time of writing, numerous other documents based on \ivoatex~can
+be found on Volute.
 
 
 \section{Authoring documents}
@@ -736,7 +744,7 @@ A value in row 2& And so on\\
 
 The \texword{sptablerule} used here inserts a horizontal rule with some
 extra spacing and will be rendered consistently in both PDF and HTML.
-It should not, as a rule, used between table rows, it is intended
+It should not, as a rule, used between table rows. It is intended
 primarily to delimit the table itself as well as the the heading and the
 body.
 
@@ -781,7 +789,8 @@ XML schema files should not be distributed in this way, as they have
 conventional places within the ivoa.net URL hierarchy.
 
 For instance, \verb|\auxiliaryurl{custom.css}| expands to
-$$\hbox{\auxiliaryurl{custom.css},}$$ which is, for each release of this
+$$\hbox{\auxiliaryurl{custom.css},}$$ in this document, 
+which is, for each release of this
 document, the URL the example custom CSS file mentioned in the example
 in sect.~\ref{sect:customcss} is found at.  The preferred way to include
 such (long) URLs is in footnotes, as they typcially cannot be hyphenated.
@@ -820,6 +829,7 @@ markup usually is very hard, and version control offers a more
 manageable solution to the problem such packages attempt to solve.
 
 \subsection{Version Control System Information}
+\label{sect:vcs}
 
 It is recommended to include basic metadata obtained from the version
 control system into \ivoatex~Documents where available.  Basic support
@@ -872,7 +882,7 @@ For such cases, \ivoatex\ offers a python script
 \texttt{update\_generated.py}, which is executed by the
 \texttt{generate} make target.  It simply looks for structured comments
 in the main document and replaces what is between them with generated
-contents.  The opening line consists of a \TeX comment introducer, a
+contents.  The opening line consists of a \TeX~comment introducer, a
 blank, the literal \texttt{GENERATED:}, another blank, and a command
 line.  The closing line is a comment consisting of \texttt{/GENERATED}.
 
@@ -1003,6 +1013,47 @@ the editor should send the standards record to the registry of
 registries by e-mail\footnote{See \url{http://rofr.ivoa.net/} for
 contact information.} and then re-submit the record with each upload.
 
+\subsection{Submitting a Document}
+
+Snapshots of documents should be regularly submitted to the document
+repository as part of the IVOA review process.  While \ivoatex~could
+still make this a bit more streamlined, there is some automation for
+this process present.  Consider the following recommendation for the
+release process (or course, replace \verb|${DOCNAME}| with the DOCNAME
+as defined in the Makefile):
+
+\begin{enumerate}
+\item Add the version-specific URL and designation (e.g.,
+``WD-20100801'') using \texword{previousversion} of the currently
+published document (i.e., the version you are replacing) in the document
+header.
+\item Run \verb|make| and inspect \verb|${DOCNAME}.log|.  There should
+obviously be no undefined citations or internal references.  Also, try
+to avoid overfull hboxes (underfull hboxes are not always avoidable).
+\item Have another round of proofreading on \verb|${DOCNAME}.pdf|.  Also
+critically inspect the architecture diagram and the relationships to
+other standards, in particular whether new versions of those have
+reached REC in the meantime.
+\item Run \verb|make ${DOCNAME}.html| and briefly review the produced
+HTML file.  Warnings or even error messages in this process are
+(regrettably) still to be expected, so at least superficial human inspection 
+of the output is necessary.
+\item Edit the Makefile and update the DOCVERSION, DOCDATE, and DOCTYPE
+variables according to the new document release.
+\item Run \verb|make package|.  If no major problems become visible,
+\item run \verb|svn commit| (or the equivalent for your VCS) -- this
+will update the source if VCS information is represented as per
+section~\ref{sect:vcs}.
+\item Run \verb|make upload|.  This will ask you to review the document
+metadata in a python dictionary, let you add a note for the document
+coordinator and performs the upload.
+\item Review the file \texttt{docrepo-response.html} created in the
+document directory; this contains the raw HTML the uploading script got
+back from the document repository.  We do not automatically check for
+errors yet, so again human attention is required.
+\end{enumerate}
+
+
 \section{Customisation and Development}
 \label{sect:impl}
 
@@ -1082,7 +1133,7 @@ When a document requires special markup, it is likely that
 different implementations will be necessary for PDF and HTML output.
 Using \texword{iftth} the implementations for the current output mode
 can be selected (without the \texword{newif} mentioned in the tth
-documentation, as that is already performed in \texttt{tthdefs.tex}.
+documentation, as that is already performed in \texttt{tthdefs.tex}).
 
 For instance, RegTAP has many inline tables that need special spacing
 the PDF rendering, whereas normal tables will do for them
