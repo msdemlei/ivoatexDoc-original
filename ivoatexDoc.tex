@@ -535,23 +535,26 @@ Thus, all \ivoatex\ documents must have an abstract within the
 \subsection{Listings, Verbatim Material}
 
 \ivoatex\ documents should use the \texword{listings} package to include
-source code snippets, XML fragments and the like.  It can be used after
-a set of declarations like
+source code snippets, XML fragments and the like.  While the ivoa class
+requires the package as of version 1.2 (and hence you can use the
+\texword{lstlisting} environment without an explicit
+\texword{usepackage} declaration), you will usually want to configure
+the package in the document preamble (i.e., before its
+\verb|\begin{document}|), perhaps like this:
+
 \begin{lstlisting}[language=TeX]
-\usepackage{listings}
 \lstloadlanguages{XML,sh}
 \lstset{flexiblecolumns=true,tagstyle=\ttfamily,
   showstringspaces=False}
 \end{lstlisting}
-is included in the document preamble (i.e., before its
-\verb|\begin{document}|). The languages preloaded should be adapted to
-the document's needs.  Additional
+
+Additional
 languages supported that are likely relevant in a VO context include C,
 fortran, python, SQL, and java, specified as above case-insensitively.
 
 The setup in the example (flexible columns, tags in
-typewriter, no explits blanks even in strings) 
-is recommended for including XML source.
+typewriter, no explicit blanks even in strings) 
+produces reasonably pleasant output for a wide range of languages.
 
 Actual listings are obtained with code like
 \begin{verbatim}
