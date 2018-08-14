@@ -24,4 +24,6 @@ VECTORFIGURES =
 
 AUX_FILES=custom.css
 
+AUTHOR_EMAIL=msdemlei@ari.uni-heidelberg.de
+
 include ivoatex/Makefile
