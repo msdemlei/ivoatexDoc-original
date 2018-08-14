@@ -55,7 +55,8 @@ PDF and HTML renderings of the documents with sources in
 plain text suitable for version control, as is desirable for normative
 texts.  This note contains a user guide as well as a discussion of 
 \ivoatex's dependencies and its implementation.  It refers to version
-1.2 of the software.
+1.1 of the software.  While \ivoatex~is not usually explicitly
+installed, it can be downloaded from \url{http://ivoatex.g-vo.org}.
 \end{abstract}
 
 
@@ -86,7 +87,7 @@ manual intervention, is optional, often used incorrectly, and frequently
 lacks interoperability.  Led by these considerations, it was decided that
 \ivoatex\ would have to be based on plain text source files.
 
-As mandated by the IVOA Document Standards \citep{std:docSTD}, 
+As mandated by the IVOA Document Standards \citep{2017ivoa.spec.0517G},
 finished documents have to be at
 least available in PDF, while an additional HTML rendering for online
 use is recommended.  A document preparation system should thus be
@@ -210,7 +211,7 @@ distribution.\footnote{See
 
 To see if the prerequisites are there and compatible with \ivoatex, try
 building an updated version of this document from its volute source:
-\begin{lstlisting}[language=sh]
+\begin{lstlisting}[language=sh,basicstyle=\footnotesize]
 svn co https://volute.g-vo.org/svn/trunk/projects/ivoapub/ivoatexDoc
 cd ivoatexDoc
 make biblio   # update the bibliography
@@ -250,7 +251,7 @@ length.
 While it is clearly preferable if authors use IVOA's 
 designated common version control
 system -- at this point, this is
-Volute\footnote{http://volute.g-vo.org} -- from the outset of
+Volute\footnote{\url{http://volute.g-vo.org}} -- from the outset of
 document development, it is possible to operate it locally as well.
 
 \subsubsection{Installation from Archive (without Volute)}
@@ -260,7 +261,7 @@ distribution site and unpack it into the future document directory:
 
 \begin{lstlisting}[language=sh]
 cd $DOCNAME
-curl http://soft.g-vo.org/ivoatex/ivoatex-latest.tar.gz \
+curl http://ivoatex.g-vo.org/ivoatex-1.1.tar.gz \
   | tar -xvzf -k
 \end{lstlisting}
 
@@ -300,7 +301,8 @@ templates which are part of the \ivoatex\ distribution:
 \begin{lstlisting}[language=sh]
 cp ivoatex/Makefile.template Makefile
 cp ivoatex/document.template $DOCNAME.tex
-cp ivoatex/archdiag-full.xml role_diagram.xml # Notes don't need that
+# Notes don't need the following
+cp ivoatex/archdiag-full.xml role_diagram.xml 
 \end{lstlisting}
 
 The next step is to fill out the makefile template.  
@@ -312,12 +314,13 @@ All lines with question marks must be filled out.  The document date
 is the publication date, which can be significantly different from the
 current date.  After its initial setting, it should only be changed at
 the time of submission to the document archive.  It is always in
-DALI-style ISO format \citep{std:DALI}, e.g., 2014-03-31.
+DALI-style ISO format \citep{2017ivoa.spec.0517D}, e.g., 2014-03-31.
 
 \texttt{SOURCES} is used in dependency processing.  It would be amended
 when the source file is split into separate files or if material is
 included into the document, e.g., via \texword{lstinputlisting}.
-Graphics files included do not need to be given here.
+Graphics files included do not need to be given here, as the document
+will automatically depend on them.
 
 \texttt{FIGURES} must contain the names of all bitmap graphics included
 in the document; files missing here will be missing from the package for
@@ -445,7 +448,7 @@ for publication in the IVOA's document repository.   Obviously,
 \texttt{DOCVERSION}, \texttt{DOCTYPE}, and \texttt{DOCDATE} in the
 Makefile should be updated as necessary before this target is built.
 The result is a zip file with a name compliant to the IVOA document
-standards \citep{std:docSTD}.
+standards \citep{2017ivoa.spec.0517D}.
 \item \texttt{arxiv-upload}  produces a file arxiv-upload.tar.gz for
 the current document.  ArXiv uploads are automatically done by the
 document coordinator for RECs and ENs, and editors \emph{should not} do
@@ -536,7 +539,7 @@ Thus, all \ivoatex\ documents must have an abstract within the
 
 \ivoatex\ documents should use the \texword{listings} package to include
 source code snippets, XML fragments and the like.  While the ivoa class
-requires the package as of version 1.2 (and hence you can use the
+requires the package as of version 1.1 (and hence you can use the
 \texword{lstlisting} environment without an explicit
 \texword{usepackage} declaration), you will usually want to configure
 the package in the document preamble (i.e., before its
@@ -578,7 +581,7 @@ case-by-case basis as in
 
 \lstinputlisting[language=tex]{verbatimstyles.tex}
 
-As of version 1.0 of \ivoatex, only \texword{footnotesize} is actually
+As of version 1.1 of \ivoatex, only \texword{footnotesize} is actually
 formatted by the CSS embedded in the HTML document, and we believe
 listings should not be much smaller than that anyway.  As the options
 are translated into CSS classes, it is fairly easy to add further
@@ -628,18 +631,18 @@ remainder of the document to have expressive texts not overciting. For
 instance,
 
 \begin{lstlisting}[language=tex]
-IVOA Identifiers \citep{2007ivoa.spec.0314P} introduces URIs to
+IVOA Identifiers \citep{2016ivoa.spec.0523D} introduces URIs to
 reference Registry records, which are typically transmitted in
-VOResource \citep{2008ivoa.spec.0222P} format.  Both VOResource 
+VOResource \citep{2018ivoa.spec.0625P} format.  Both VOResource 
 and IVOA Identifiers are based on various W3C standards.
 \end{lstlisting}
 
 will come out as
 
 \begin{quotation}
-IVOA Identifiers \citep{2007ivoa.spec.0314P} introduces URIs to
+IVOA Identifiers \citep{2016ivoa.spec.0523D} introduces URIs to
 reference Registry records, which are typically transmitted in
-VOResource \citep{2008ivoa.spec.0222P} format.  Both VOResource and IVOA
+VOResource \citep{2018ivoa.spec.0625P} format.  Both VOResource and IVOA
 Identifiers are based on W3C standards.
 \end{quotation}
 
@@ -868,11 +871,9 @@ formats).  We therefore recommend to run SVN in the C
 locale, at least while working on IVOA documents.  Users affected with
 on-C locales
 could in a Bourne-like shell use a construct like
-
 \begin{lstlisting}[language=sh]
 alias svn='LC_ALL=C svn'
 \end{lstlisting}
-
 and forget about the problem.
 
 
@@ -961,7 +962,7 @@ With an appropriately instrumented schema, a document can say
 to produce documentation for the schema type \xmlel{MyType} within
 the XML schema file \texttt{SchemaSource.xsd}.
 
-\ivoatex will never execute \texttt{update\_generated.py} as part of a
+\ivoatex~will never execute \texttt{update\_generated.py} as part of a
 dependency chain; it is intended that \texttt{make generate} must always
 been manually triggered.  On the one hand, this is because its
 dependencies cannot be generically modelled, given that arbitrary
@@ -1026,7 +1027,7 @@ Snapshots of documents should be regularly submitted to the document
 repository as part of the IVOA review process.  While \ivoatex~could
 still make this a bit more streamlined, there is some automation for
 this process present.  Consider the following recommendation for the
-release process (or course, replace \verb|${DOCNAME}| with the DOCNAME
+release process (of course, replace \verb|${DOCNAME}| with the DOCNAME
 as defined in the Makefile):
 
 \begin{enumerate}
@@ -1131,7 +1132,7 @@ general need specific handling, and sometimes support is somewhat spotty.
 For instance, the \texword{nolinkurl}
 macro is not supported natively by tth, and hence in
 \texttt{tthdefs.tex} there is code to the effect of
-\begin{lstlisting}[language=TeX]
+\begin{lstlisting}[language=TeX,basicstyle=\footnotesize]
 \newcommand{\nolinkurl}[1]{%
   \special{html:<span class='nolinkurl'>}#1\special{html:</span>}}
 \end{lstlisting}
