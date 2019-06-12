@@ -171,7 +171,8 @@ here).
 \item The \texttt{zip} archiver for package generation.
 \item \texttt{imageMagick} and \texttt{ghostscript} if vector graphics
 is to be processed (which includes the architecture diagram).
-\item \texttt{librsvg2} to let imageMagick process SVG.
+\item \texttt{inkscape} when people need to (re-) build the architecture
+diagram.
 \end{itemize}
 
 On Windows, it is recommended to run \ivoatex\ within cygwin, where all
@@ -182,7 +183,7 @@ Debian-derived systems, the dependencies should be present after
 running a distribution-specific adaption of
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
 apt-get install build-essential texlive-latex-extra zip xsltproc\
-  texlive-bibtex-extra imagemagick ghostscript cm-super librsvg2-bin
+  texlive-bibtex-extra imagemagick ghostscript cm-super inkscape
 \end{lstlisting}
 (cm-super contains vector versions of computer modern fonts in T1
 encoding), on RPM-based systems something like
@@ -408,8 +409,8 @@ programs.  In the PDF renderings of the document,
 a PDF version of the architecture diagram is
 required.  This is built using \texttt{make role\_diagram.pdf}, and a
 stand-in will be built if your system lacks the software to do this
-conversion.  It should be fine to use common vector graphic tools like
-inkscape to perform the conversion in that case.
+conversion.  Ivoatex uses inkscape for the conversion.
+
 As long as the tooling situation regarding \LaTeX~and SVG is as
 unsatisfactory as it is, please commit both \texttt{role\_diagram.svg} and
 \texttt{role\_diagram.pdf} to the version control system.
