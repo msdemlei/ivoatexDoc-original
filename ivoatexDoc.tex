@@ -170,9 +170,9 @@ central makefile should probably be amended to allow easier changes
 here).
 \item The \texttt{zip} archiver for package generation.
 \item \texttt{imageMagick} and \texttt{ghostscript} if vector graphics
-is to be processed (which includes the architecture diagram).
-\item \texttt{inkscape} when people need to (re-) build the architecture
-diagram.
+is to be processed.
+\item \texttt{inkscape} when people need to (re-) build architecture
+diagrams.
 \end{itemize}
 
 On Windows, it is recommended to run \ivoatex\ within cygwin, where all
@@ -1036,6 +1036,14 @@ as defined in the Makefile):
 ``WD-20100801'') using \texword{previousversion} of the currently
 published document (i.e., the version you are replacing) in the document
 header.
+\item Make sure the changelog appendix lists the major changes since the
+last release of the document; it is probably a good idea to re-scan the
+(generally more extensive) version control history at this point for
+anything that is missing from the in-document changelog.
+\item If you have schema files, vocabularies, or the like, make sure
+their version identifiers are what you expect (in particular, for
+recommendations, such version identifier should have no appendices
+of the kind ``-pr1''.
 \item Run \verb|make| and inspect \verb|${DOCNAME}.log|.  There should
 obviously be no undefined citations or internal references.  Also, try
 to avoid overfull hboxes (underfull hboxes are not always avoidable).
