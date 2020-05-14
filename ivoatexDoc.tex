@@ -173,6 +173,12 @@ here).
 is to be processed.
 \item \texttt{inkscape} when people need to (re-) build architecture
 diagrams.
+\item \texttt{python3} for automatic submission to the document
+repository, generated content, and other housekeeping that is probably
+not relevant for normal users.
+\item Optionally, \texttt{latexmk}.  If it is available, a lot less
+manual attention is necessary when rerunning LaTeX to update
+bibliographies or document-internal references.
 \end{itemize}
 
 On Windows, it is recommended to run \ivoatex\ within cygwin, where all
@@ -437,8 +443,8 @@ Other makefile targets for author use include:
 \item \texttt{biblio} updates the bibliography (i.e., runs \BibTeX);
 running this is necessary after one of the bibliography files is updated
 or when a new publication is referenced from the document.
-\item \texttt{forecetex} rebuilds the PDF unconditionally (e.g., when TeX
-asks to be rerun)
+\item \texttt{forecetex} rebuilds the PDF unconditionally just as if the
+main source had been edited.
 \item \texttt{\$DOCNAME.html} generates an HTML rendering of the
 document; at this point, this will typically emit quite a bit of
 spurious diagnostics.  Unfortunately, real problems may hide within.  
@@ -460,6 +466,10 @@ then uploads the package.
 \item \texttt{generate} is used to update machine-generated content in
 the document, typically by the main editor.  See
 section~\ref{sect:generated} for details.
+\item \texttt{\$DOCNAME-draft.pdf} generates a PDF rendering just like a
+simple make, but it will add a watermark against distribution.  This is
+mainly intended for continuous integration workflows.  This only works
+if pdftk is installed.
 \end{itemize}
 
 \begin{admonition}{Note}
@@ -1000,7 +1010,7 @@ To do that, create a standards record from ivoatex's template (assuming
 operation within an svn checkout):
 
 \begin{lstlisting}[language=sh]
-$ svn copy ivoatex/stdrec-template.xml stdrec.xml
+$ svn copy ivoatex/stdrec-template.xml $DOCNAME.vor
 \end{lstlisting}
 
 In the resulting file, the items one has to change are marked with four
@@ -1015,7 +1025,7 @@ require registration).
 
 Most of the metadata to be filled in actually already is available in
 structured form in \ivoatex.  Contributions that help automating
-creation and maintenance of stdrec.xml exploiting this are welcome.
+creation and maintenance of the standards record exploiting this are welcome.
 
 With the upload of a proposed recommendation to the document repository,
 the editor should send the standards record to the registry of
