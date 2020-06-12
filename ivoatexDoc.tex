@@ -1053,7 +1053,8 @@ anything that is missing from the in-document changelog.
 \item If you have schema files, vocabularies, or the like, make sure
 their version identifiers are what you expect (in particular, for
 recommendations, such version identifier should have no appendices
-of the kind ``-pr1''.
+of the kind ``-pr1''.  The \verb|AUX_FILES| variable in your Makefile is
+a good start for what files to check.
 \item Run \verb|make| and inspect \verb|${DOCNAME}.log|.  There should
 obviously be no undefined citations or internal references.  Also, try
 to avoid overfull hboxes (underfull hboxes are not always avoidable).
