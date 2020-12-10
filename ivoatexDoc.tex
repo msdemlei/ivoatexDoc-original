@@ -219,7 +219,7 @@ distribution.\footnote{See
 To see if the prerequisites are there and compatible with \ivoatex, try
 building an updated version of this document from its volute source:
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
-svn co https://volute.g-vo.org/svn/trunk/projects/ivoapub/ivoatexDoc
+git clone https://github.com/msdemlei/ivoatexDoc
 cd ivoatexDoc
 make biblio   # update the bibliography
 make forcetex # make a PDF ignoring timestamps
@@ -256,46 +256,51 @@ like \texttt{SimpleDALRegExt} probably marks the upper limit in terms of
 length.
 
 While it is clearly preferable if authors use IVOA's 
-designated common version control
-system -- at this point, this is
-Volute\footnote{\url{http://volute.g-vo.org}} -- from the outset of
+designated common version control system\footnote{Which, despite
+many concerns \citep{book:zuboff}, currently is
+github.com.} from the outset of
 document development, it is possible to operate it locally as well.
 
-\subsubsection{Installation from Archive (without Volute)}
+\subsubsection{Installation from Archive (without version control)}
 
 Without version control, it is sufficient to obtain \ivoatex\ from a
 distribution site and unpack it into the future document directory:
 
 \begin{lstlisting}[language=sh]
 cd $DOCNAME
-curl http://ivoatex.g-vo.org/ivoatex-1.1.tar.gz \
+curl http://ivoatex.g-vo.org/ivoatex-latest.tar.gz \
   | tar -xvzf -k
 \end{lstlisting}
 
-\subsubsection{Installation with SVN version control}
+\subsubsection{Installation with git version control}
 
 While it is of course possible to keep \ivoatex\ in checkouts, too,
-the recommended and more elegant way is to use \texttt{svn:externals}.
+the recommended way is to use git's submodule feature; that way, updates
+to later ivoatex versions are simpler and will not pollute the
+document's history; it is also easier to feed back any improvements
+you may make to ivoatex:
 
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
-export VOLUTEBASE="https://volute.g-vo.org/svn/trunk/projects"
-export WG=?????
-# this would be the Working Group name as represented in
-# volute subdirectories: dal, dm, edu, grid, registry
-svn import $DOCNAME $VOLUTEBASE/$WG/$DOCNAME
-rm -r $DOCNAME
-svn co $VOLUTEBASE/$WG/$DOCNAME $DOCNAME
 cd $DOCNAME
-svn propset svn:externals\
-  "ivoatex $VOLUTEBASE/ivoapub/ivoatex" .
-svn update
-svn propset svn:ignore . --file ivoatex/svn-ignore.txt
+git init
+git submodule add https://github.com/ivoa-std/ivoatex
+cp ivoatex/svn-ignore.txt .gitignore
+git add .gitignore
+git commit -m "Starting ..."
 \end{lstlisting}
 
-This has the advantage that \ivoatex~updates are automatically pulled in
-and that it is
-trivial to feed back bibliography additions and patches to \ivoatex\
-itself.
+At this point create a repository in your account using github.com's web
+interface. Use \$DOCNAME as the repository name, and do not choose any
+template; this procedure will leave you at a web page with a URI like
+https://github.com/msdemlei/ivoatexDoc.  This is your repository URI.
+
+Then, push your newly changed material into this new repository's main
+branch:
+
+\begin{lstlisting}[language=sh,basicstyle=\footnotesize]
+git remote add origin <repository URI>
+git push --set-upstream origin master
+\end{lstlisting}
 
 \subsubsection{Beginning the document}
 \label{sect:beginning}
@@ -1320,7 +1325,7 @@ focus on auto-documenting XML schema.
 \end{itemize}
 
 
-\bibliography{ivoatex/ivoabib,ivoatex/docrepo}
+\bibliography{local,ivoatex/ivoabib,ivoatex/docrepo}
 
 
 \end{document}
