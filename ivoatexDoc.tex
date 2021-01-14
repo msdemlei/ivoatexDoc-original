@@ -471,6 +471,9 @@ then uploads the package.
 \item \texttt{generate} is used to update machine-generated content in
 the document, typically by the main editor.  See
 section~\ref{sect:generated} for details.
+\item \texttt{update} updates the ivoatex submodule to whatever is in
+the main ivoatex branch on github.  This will fail if you have
+uncommitted local changes to your ivoatex.
 \item \texttt{\$DOCNAME-draft.pdf} generates a PDF rendering just like a
 simple make, but it will add a watermark against distribution.  This is
 mainly intended for continuous integration workflows.  This only works
