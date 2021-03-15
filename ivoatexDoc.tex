@@ -1,10 +1,6 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
 
-% TODO: in git vademecum, mention that people need to run
-% git submodule update --remote
-% occasionally.
-
 \usepackage{listings}
 \lstloadlanguages{sh,make,[latex]tex}
 \lstset{flexiblecolumns=true,numberstyle=\small,showstringspaces=False,
@@ -1088,6 +1084,34 @@ document directory; this contains the raw HTML the uploading script got
 back from the document repository.  We do not automatically check for
 errors yet, so again human attention is required.
 \end{enumerate}
+
+
+\section{Developing IVOA Documents}
+\label{sect:ivoapol}
+
+While \ivoatex\ can of course be used in private repositories, its
+specific focus is the development of IVOA standards and related
+documentation.  This section discusses practices and policies put in
+place to ensure transparent and reproducible processes.
+
+\subsection{The ivoa-std Organisation}
+
+Do people always start in private repos?  Do some documents start
+directly in ivoa-std?  Do we have a stance on main vs.~master?
+
+How does one get one's document into ivoa-std?  And when?
+
+Who runs ivoa-std?  Are there fallbacks?
+
+\subsection{Managing Changes}
+
+Fork or branch directly from the ivoa-std repo?  If the latter, are
+there limits who may create and push to branches?
+
+How to do a good PR (have a checklist)?
+
+Requirements on merging (when to request reviews?  when is it reasonable
+to skip it?)
 
 
 \section{Customisation and Development}
