@@ -215,13 +215,14 @@ distribution.\footnote{See
 To see if the prerequisites are there and compatible with \ivoatex, try
 building an updated version of this document from its volute source:
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
-git clone https://github.com/msdemlei/ivoatexDoc
+git clone --recurse-submodules https://github.com/msdemlei/ivoatexDoc
 cd ivoatexDoc
 make biblio   # update the bibliography
 make forcetex # make a PDF ignoring timestamps
 make ivoatexDoc.html  # make an html document
 make package # make a zipfile for IVOA submission
 \end{lstlisting}
+
 During HTML generation, various diagnostics both 
 from tth and from xsltproc (unknown commands,
 unexpected end tags, and the like) are
