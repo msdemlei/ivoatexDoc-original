@@ -859,11 +859,31 @@ manageable solution to the problem such packages attempt to solve.
 
 It is recommended to include basic metadata obtained from the version
 control system into \ivoatex~Documents where available.  Basic support
-for Volute (i.e., subversion) is built into \ivoatex.  It is based on
-subversion's
-keyword substitution, which therefore needs to be enabled on the 
-main document source file.
-While any keys might be used, \ivoatex's default support deals with:
+for subversion and git is built into \ivoatex, based on some sort
+of keyword substitution.  The underlying mechanisms, as well as
+the information conveyed, is rather different between git and
+subversion.  We cover the git case first; the part about how this was
+done in subversion is probably only of historical interest now.
+
+\subsubsection{VCS Metadata in Git}
+
+To enable in-document VCS tracking in git, two steps are necessary:
+
+\begin{enumerate}
+\item Add \texttt{gitmeta.tex} to your \texttt{SOURCES} in the makefile.
+\item Add a line \verb|\input getmeta| somewhere near the top of your
+LaTeX source (right below \verb|\input tthdefs| is a good place).
+\end{enumerate}
+
+This will then add the commit identifier and a time stamp to the title
+page of the document.  Patches to make ivoatex include some sensible URL
+(perhaps the remote origin URL if it exists) are solicited.
+
+\subsubsection{VCS Metadata in Subversion}
+
+Subversion can be configured to edit files when certain repository
+properties change; while any keys might be used for this, \ivoatex's
+default support deals with:
 
 \begin{lstlisting}[language=sh]
 svn propset svn:keywords "Date Rev URL" $DOCNAME.tex
@@ -885,7 +905,7 @@ localized information will be entered into the document, which is
 unwelcome for many resaons (non-ASCII characters, ambiguous date
 formats).  We therefore recommend to run SVN in the C
 locale, at least while working on IVOA documents.  Users affected with
-on-C locales
+non-C locales
 could in a Bourne-like shell use a construct like
 \begin{lstlisting}[language=sh]
 alias svn='LC_ALL=C svn'
