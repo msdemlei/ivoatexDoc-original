@@ -14,7 +14,7 @@ DOCTYPE = NOTE
 
 # Source files for the TeX document (but the main file must always
 # be called $(DOCNAME).tex
-SOURCES = $(DOCNAME).tex svnsubstitution.tex verbatimstyles.tex
+SOURCES = $(DOCNAME).tex svnsubstitution.tex verbatimstyles.tex gitmeta.tex
 
 # List of pixel image files to be included in submitted package 
 FIGURES = 

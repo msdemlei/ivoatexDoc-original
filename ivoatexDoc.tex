@@ -1,5 +1,6 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
+\input gitmeta
 
 \usepackage{listings}
 \lstloadlanguages{sh,make,[latex]tex}
@@ -871,7 +872,7 @@ To enable in-document VCS tracking in git, two steps are necessary:
 
 \begin{enumerate}
 \item Add \texttt{gitmeta.tex} to your \texttt{SOURCES} in the makefile.
-\item Add a line \verb|\input getmeta| somewhere near the top of your
+\item Add a line \verb|\input gitmeta| somewhere near the top of your
 LaTeX source (right below \verb|\input tthdefs| is a good place).
 \end{enumerate}
 
