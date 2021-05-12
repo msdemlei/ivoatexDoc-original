@@ -213,7 +213,7 @@ distribution.\footnote{See
   \url{http://comments.gmane.org/gmane.os.apple.macports.user/21526}.}
 
 To see if the prerequisites are there and compatible with \ivoatex, try
-building an updated version of this document from its volute source:
+building an updated version of this document from its github source:
 \begin{lstlisting}[language=sh,basicstyle=\footnotesize]
 git clone --recurse-submodules https://github.com/msdemlei/ivoatexDoc
 cd ivoatexDoc
@@ -417,7 +417,7 @@ programs.  In the PDF renderings of the document,
 a PDF version of the architecture diagram is
 required.  This is built using \texttt{make role\_diagram.pdf}, and a
 stand-in will be built if your system lacks the software to do this
-conversion.  Ivoatex uses inkscape for the conversion.
+conversion (currently: inkscape).
 
 As long as the tooling situation regarding \LaTeX~and SVG is as
 unsatisfactory as it is, please commit both \texttt{role\_diagram.svg} and
@@ -478,24 +478,22 @@ if pdftk is installed.
 \end{itemize}
 
 \begin{admonition}{Note}
-Simply running \texttt{latex} or \texttt{pdflatex} directly
+Simply running \texttt{latex}, \texttt{pdflatex}, 
+or \texttt{mklatex} directly
 (rather than through make) is \emph{not} supported with \ivoatex.  Due
 to the non-global installation of the support files, the \TeX\ run needs
 a special environment that is prepared by the makefile.
 
-Also note that bibliography processing must be initated manually by
+Also note that on systems without latexmk,
+bibliography processing must be initated manually by
 running \texttt{make biblio}; unless authors checked in the bbl file
 this produces, this must be run after a document checkout.
 \end{admonition}
 
 \subsection{Examples}
 
-Examples for \ivoatex\ use include this 
-document\footnote{https://volute.g-vo.org/svn/trunk/projects/ivoapub/ivoatexDoc}
-or
-RegTAP\footnote{https://volute.g-vo.org/svn/trunk/projects/registry/regtap}.
-At the time of writing, numerous other documents based on \ivoatex~can
-be found on Volute.
+Examples for \ivoatex\ use are found in the ivoa-std organisation on
+github\footnote{\url{https://github.com/ivoa-std}}.
 
 
 \section{Authoring documents}
@@ -514,6 +512,8 @@ to ease standards authoring.  These include:
 \begin{bigdescription}
 \item[\texword{author}, \texword{previousversion}, \texword{ivoagroup}] these are discussed
 in sect.~\ref{sect:beginning}.
+\item[\texword{ucd}] a macro for marking up UCDs.  This in particular
+helps with hyphenation of these, typically long, strings.
 \item[\texword{xmlel}] a macro for marking up XML element or attribute
 names and similar.  
 \item[\texword{vorent}] for a name taken from VOResource or its
@@ -1284,7 +1284,8 @@ xsltproc ivoatex/fromivoadoc.xslt ivoadoc_source.html
 
 \subsection{Maintenance of the Architecture Diagram}
 
-The IVOA architecture diagram is introduced in \citet{note:VOARCH} to
+The IVOA architecture diagram is introduced in
+\citet{2010ivoa.rept.1123A} to
 visualise the standards landscape.  All IVOA recommendations should have
 an architecture diagram showing the current standard as well as the
 related standards within that landscape.
