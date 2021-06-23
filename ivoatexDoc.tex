@@ -360,7 +360,12 @@ look like.
 
 \texword{ivoagroup} should contain the name of the (one) IVOA working or
 interest group under which auspices the document development mainly
-happens.  Pick one from the following list\footnote{We do not
+happens.  If this is an interest group (which is only possible for
+notes), use \verb|ivoagroup[IG]{...}| to make \ivoatex~use ``Interest
+Group'' rather than ``Working Group'' as the label of the corresponding
+piece of metadata.
+
+Pick one from the following list\footnote{We do not
 enforce the use of a controlled vocabulary here; automatic submission
 with \texttt{make upload} will fail if you invent something here,
 though.}:
@@ -375,6 +380,8 @@ though.}:
 \item Data Curation and Preservation
 \item Standards and Processes
 \item Semantics
+\item Operations
+\item Radio
 \item Theory
 \item VO Event
 \item Time Domain
