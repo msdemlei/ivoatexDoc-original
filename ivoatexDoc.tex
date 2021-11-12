@@ -1136,6 +1136,50 @@ How does one get one's document into ivoa-std?  And when?
 
 Who runs ivoa-std?  Are there fallbacks?
 
+\subsection{Contributing to a Document}
+
+IVOA repositories follow most open source projects in using a fork and pull request workflow for contributing updates. 
+This allows open contributions whilst protecting the repository integrity.
+All contributors, whether document editors or first time contributors follow this same process.
+All pull requests need to be approved by a maintainer of the repository.
+
+When setting up your environment for a first time commit, we recommend following this `triangle' workflow to make later contributions easier. 
+First fork the official repository through the GitHub web page (add image)
+
+Then on your local computer, clone the official repository and then add your fork as a remote repository. Note here that we use a read-only clone (git://) from the IVOA repository to avoid the potential for future mistakes. 
+\begin{lstlisting}[language=sh]
+git clone  --recurse-submodules git@github.com:ivoa-std/standard.git
+cd standard
+git remote add mine git@github.com:username/standard.git
+git remote -v
+\end{lstlisting}
+
+you should see output similar to 
+\begin{lstlisting}[language=sh]
+mine	git@github.com:username/standard.git (fetch)
+mine	git@github.com:username/standard.git (push)
+origin	git://github.com/ivoa-std/standard.git (fetch)
+origin	git://github.com/ivoa-std/standard.git (push)
+\end{lstlisting}
+
+
+Now to prepare for your change, make sure you are up to date with the official repository and create a branch for your work.
+\begin{lstlisting}[language=sh]
+git checkout main
+git pull origin main
+git checkout -b branch-name-for-change
+\end{lstlisting}
+
+Once you are happy with the change (and we do recommend building the PDF document locally to review it) you can save it to git and send it to your forked repository.
+
+\begin{lstlisting}[language=sh]
+git commit 
+git push mine branch-name-for-change
+\end{lstlisting}
+
+ and then on the GitHub web interface create your Pull Request to contribute it back to the official repository.
+
+
 \subsection{Managing Changes}
 
 Fork or branch directly from the ivoa-std repo?  If the latter, are
