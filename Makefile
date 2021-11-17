@@ -17,7 +17,7 @@ DOCTYPE = NOTE
 SOURCES = $(DOCNAME).tex svnsubstitution.tex verbatimstyles.tex gitmeta.tex
 
 # List of pixel image files to be included in submitted package 
-FIGURES = 
+FIGURES = triangle_workflow.png
 
 # List of PDF figures (for vector graphics)
 VECTORFIGURES = 
