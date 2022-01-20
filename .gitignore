@@ -10,3 +10,5 @@ ivoatexmeta.tex
 *.zip
 *.fdb_latexmk
 *.fls
+*.swp
+gitmeta.tex
