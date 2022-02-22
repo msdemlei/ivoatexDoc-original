@@ -1231,6 +1231,31 @@ Requirements on merging (when to request reviews?  when is it reasonable
 to skip it?)
 
 
+\subsection{Adopting a Repository for ivoa-std}
+
+This section documents policies and workflows for the managers of the
+ivoa-std organisation; normal \ivoatex~users can ignore it.
+
+On request by a chair of an IVOA working group, the ivoa-std management
+will migrate a repository from where the original editor started it
+(called \verb|<original-repo>| below) to the ivoa-std organisation.  To
+do that, they perform the following steps:
+
+\begin{enumerate}
+\item Create a repository \verb|ivoa-std/<short-name>| via github's
+browser UI.  Make sure this repository is public and uses the template
+TODO\footnote{Pat?}
+\item Locally clone the freshly created repository: \verb|git clone <repo>|
+\item \verb|git pull --allow-unrelated-histories <original-repo> master|
+\item \verb|git push origin master|
+\item Setup branch protection rules for the master branch\todo{Pat has
+promised to describe these}
+\item Give the WG chair and the editor the following privileges: maintainer role
+\item Notify the WG (and hopefully the editor) of the move via the WG's 
+mailing list; since the histories are a bit hard to merge, recommend to
+re-clone rather than adding the new remote.
+\end{enumerate}
+
 \section{Customisation and Development}
 \label{sect:impl}
 
