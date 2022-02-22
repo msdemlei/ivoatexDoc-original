@@ -887,39 +887,6 @@ This will then add the commit identifier and a time stamp to the title
 page of the document.  Patches to make ivoatex include some sensible URL
 (perhaps the remote origin URL if it exists) are solicited.
 
-\subsubsection{VCS Metadata in Subversion}
-
-Subversion can be configured to edit files when certain repository
-properties change; while any keys might be used for this, \ivoatex's
-default support deals with:
-
-\begin{lstlisting}[language=sh]
-svn propset svn:keywords "Date Rev URL" $DOCNAME.tex
-\end{lstlisting}
-
-(only Rev is mandatory).
-In the document itself, the text for subversion's replacement needs to
-be included.  Inititally, this must look like this:
-
-\lstinputlisting[language=tex]{svnsubstitution.tex}
-
-Subversion will, at every commit, enter the current values in a
-controlled fashion, which will then be picked up by \ivoatex's macros.
-Due to the way this information is processed by \TeX, after adding the above
-text, a commit must be made before the document can be built again.
-
-For non-English locales, subversion's substitution poses the problem that
-localized information will be entered into the document, which is
-unwelcome for many resaons (non-ASCII characters, ambiguous date
-formats).  We therefore recommend to run SVN in the C
-locale, at least while working on IVOA documents.  Users affected with
-non-C locales
-could in a Bourne-like shell use a construct like
-\begin{lstlisting}[language=sh]
-alias svn='LC_ALL=C svn'
-\end{lstlisting}
-and forget about the problem.
-
 
 \subsection{Generated Content}
 \label{sect:generated}
@@ -967,14 +934,12 @@ experimental features that may change when more experience has been
 gathered as to their usefulness.
 
 One command is \texttt{taptable}, which extracts documentation from a
-live \texttt{TAP\_SCHEMA}\footnote{It is in use in the
-\href{https://volute.g-vo.org/svn/trunk/projects/registry/discovercollections}{Discovering
-Data Collections Within Services} IVOA Note.}.  The access URL of the
+live \texttt{TAP\_SCHEMA}.  The access URL of the
 live TAP service must be specified in an environment variable TAPURL in
 the Makefile, for instance
 
 \begin{lstlisting}[language=sh]
-export TAPURL=http://dc.g-vo.org/tap
+TAPURL=http://dc.g-vo.org/tap
 \end{lstlisting}
 
 Then, in the document one can use the structured comment
@@ -994,8 +959,8 @@ documentation for a type in an XML schema file.  This only works
 properly if the XML schema defines a \xmlel{vm:targetPrefix} element in
 the way pioneered by Ray Plante in
 VOResource.\footnote{See
-\url{http://volute.g-vo.org/svn/trunk/projects/registry/VOResource} for
-an example of a schema file instrumented for schemadoc.}
+\url{https://github.com/ivoa-std/TAPRegExt} for a document using
+schemadoc.}
 With an appropriately instrumented schema, a document can say
 
 \begin{lstlisting}[language=TeX]
@@ -1039,11 +1004,12 @@ records, however, is up to the document editor.  It is strongly
 recommended to keep and maintain the registry record in version control
 alongside with the document source.
 
-To do that, create a standards record from ivoatex's template (assuming
-operation within an svn checkout):
+To do that, create a standards record from ivoatex's template.  In a
+clone of a repository using ivoatex, you could say:
 
 \begin{lstlisting}[language=sh]
-$ svn copy ivoatex/stdrec-template.xml $DOCNAME.vor
+$ cp ivoatex/stdrec-template.xml $DOCNAME.vor
+$ git add $DOCNAME.vor
 \end{lstlisting}
 
 In the resulting file, the items one has to change are marked with four
@@ -1077,8 +1043,7 @@ as defined in the Makefile):
 \begin{enumerate}
 \item Make sure your ivoatex is up to date; in git checkouts, run
 \verb|make update| (or, equivalently, 
-\verb|git submodule update --remote|), 
-in subversion checkouts, \verb|svn update|.
+\verb|git submodule update --remote|).
 \item Add the version-specific URL and designation (e.g.,
 ``WD-20100801'') using \texword{previousversion} of the currently
 published document (i.e., the version you are replacing) in the document
@@ -1106,7 +1071,8 @@ of the output is necessary.
 \item Edit the Makefile and update the DOCVERSION, DOCDATE, and DOCTYPE
 variables according to the new document release.
 \item Run \verb|make package|.  If no major problems become visible,
-\item run \verb|svn commit| (or the equivalent for your VCS) -- this
+\item run \verb|git commit -am "Preparing for the release"| (the message
+should probably be more specific on \textit{which} release) -- this
 will update the source if VCS information is represented as per
 section~\ref{sect:vcs}.
 \item Run \verb|make upload|.  This will ask you to review the document
@@ -1530,6 +1496,14 @@ made smarter, perhaps along the lines of latex-make.
 
 \appendix
 \section{Changes from Previous Versions}
+
+\subsection{Changes from Version 1.2}
+
+\begin{itemize}
+\item Changing instructions to use github rather than volute.
+\item Adding policy sections for editors and the IVOA github maintainer
+\item Adding info on a few new ivoatexDoc features (e.g., the ucd macro)
+\end{itemize}
 
 \subsection{Changes from Version 1.1}
 
