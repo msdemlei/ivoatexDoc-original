@@ -1243,14 +1243,17 @@ do that, they perform the following steps:
 
 \begin{enumerate}
 \item Create a repository \verb|ivoa-std/<short-name>| via github's
-browser UI.  Make sure this repository uses the template TODO
-\item Locally clone the freshly created repository
-\item \verb|git checkout -b initial-import|
-\item \verb|git pull --allow-unrelated-histories <original-repo>|
-\item \verb|git push|
-\item Create a PR using github's browser UI
-\item Give the WG chair and the editor the following privileges: TODO
-\item Notify the WG of the move via the WG's mailing list
+browser UI.  Make sure this repository is public and uses the template
+TODO\footnote{Pat?}
+\item Locally clone the freshly created repository: \verb|git clone <repo>|
+\item \verb|git pull --allow-unrelated-histories <original-repo> master|
+\item \verb|git push origin master|
+\item Setup branch protection rules for the master branch\todo{Pat has
+promised to describe these}
+\item Give the WG chair and the editor the following privileges: maintainer role
+\item Notify the WG (and hopefully the editor) of the move via the WG's 
+mailing list; since the histories are a bit hard to merge, recommend to
+re-clone rather than adding the new remote.
 \end{enumerate}
 
 \section{Customisation and Development}
