@@ -1222,14 +1222,71 @@ For future changes repeat steps 3 to 6.
 
 \subsection{Managing Changes}
 
-Fork or branch directly from the ivoa-std repo?  If the latter, are
-there limits who may create and push to branches?
+This section should be read by persons serving as document editors.
 
-How to do a good PR (have a checklist)?
+The role of a document editor is to ensure that a document eventually
+converges towards a cohesive text, where an editor may or may not be one
+of the document authors.  Editors should also make sure that
+document changes are always well-documented and open to later scrutiny.
+The goal should be that later readers can find out why a given change
+was made, i.e., what new functionality it was intended to provide or
+what problem it should address.
 
-Requirements on merging (when to request reviews?  when is it reasonable
-to skip it?)
+While a document is under public review, the editor's role as the text's
+gatekeeper is particularly important.  In particular, they must ensure
+that all changes are properly reviewed and do not introduce changes so
+profound that a new full review would be required.
 
+With these considerations, the following policies apply to documents
+under IVOA management:
+
+\begin{enumerate}
+\renewcommand\theenumi{\alph{enumi}}
+\item Nobody can commit directly to the main branch of a document.
+Instead, all changes go through pull requests, where editors take care
+that titles and descriptions are suffiently clear and complete.
+
+\item Before public review (i.e., in the state of a Note, a Working
+Draft, or a Proposed Endorsed Note before TCG review), it is at the
+editor's discretion whether they want individual pull requests reviewed
+separately or whether pull requests are merged without a further review.
+To give some examples, a pull request adding a major feature could be
+announced on the pertinent IVOA mailing list and undergo some sort of
+public pre-review, whereas a re-working of a section could profit from a
+formal review by a co-author.  A pull request just repairing some
+bibliographic references can be merged by the editor directly.
+
+\item For documents under public review (i.e., Proposed Recommendations
+and PENs under TCG review), all pull requests must be reviewed, where at
+least one reviewer should be a document author.  It is the editor's duty
+to find reviewers, where obviously the persons who brought up the points
+addressed by the pull request would be particularly good choices.
+\end{enumerate}
+
+In order to ensure document histories remain readable, editors are
+encouraged to squash-merge pull requests.
+
+\subsection{Adopting a Repository for ivoa-std}
+
+This section documents policies and workflows for the managers of the
+ivoa-std organisation; normal \ivoatex~users can ignore it.
+
+On request by a chair of an IVOA working group, the ivoa-std management
+will migrate a repository from where the original editor started it
+(called \verb|<original-repo>| below) to the ivoa-std organisation.  To
+do that, they perform the following steps:
+
+\begin{enumerate}
+\item Create a repository \verb|ivoa-std/<short-name>| via github's
+browser UI.  Make sure this repository uses the template TODO
+\item Locally clone the freshly created repository
+\item \verb|git checkout -b initial-import|
+\item \verb|git pull --allow-unrelated-histories <original-repo>|
+\item \verb|git push|
+\item Create a PR using github's browser UI
+\item Give the WG chair and the editor the following privileges: TODO
+\item Notify the WG of the move via the WG's mailing list
+\end{enumerate}
 
 \subsection{Adopting a Repository for ivoa-std}
 
